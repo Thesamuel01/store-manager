@@ -38,6 +38,39 @@ describe('When search for all products on database', () => {
     const result = await productsModel.getAll();
     const item = result[0];
 
-    expect(item).to.include.all.keys('id', 'name');
+    expect(item).to.all.keys('id', 'name');
+  })
+});
+
+describe('When search for a specific product on database', () => {
+  const ID = 1;
+
+  before(() => {
+    const executeResult = [{ id: 1, name: 'Martelo do Thor' }, []];
+
+    sinon.stub(connection, 'execute').resolves(executeResult);
+  });
+
+  after(() => {
+    connection.execute.restore();
+  });
+
+  it('It should return an object', async () => {
+    const result = await productsModel.getById(ID);
+
+    expect(result).to.be.an('object');
+  });
+
+  it('The object returned must have "id" and "name" keys', async () => {
+    const result = await productsModel.getById(ID);
+
+    expect(result).to.include.all.keys('id', 'name');
+  });
+
+  it('The product id must be equal to id pass by parameters', async () => {
+    const result = await productsModel.getById(ID);
+    const { id } = result[0];
+
+    expect(id).to.be.equal(ID);
   })
 });
