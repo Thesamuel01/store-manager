@@ -4,7 +4,7 @@ const sinon = require('sinon');
 const connection = require('../../../models/connection');
 const productsModel = require('../../../models/productsModel');
 
-describe('When search for all products on database', () => {
+describe('TEST CASE PRODUCT MODEL - When search for all products on database', () => {
   before(() => {
     const executeResult = [[{ id: 1, name: 'Martelo do Thor' }], []];
 
@@ -42,7 +42,7 @@ describe('When search for all products on database', () => {
   })
 });
 
-describe('When search for a specific product on database', () => {
+describe('TEST CASE PRODUCT MODEL - When search for a specific product on database', () => {
   const ID = 1;
 
   before(() => {

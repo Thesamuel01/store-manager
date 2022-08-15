@@ -6,10 +6,11 @@ const productsService = require('../../../services/productsService');
 // const productsService = require('../../../controllers');
 
 const productsController = {
-  getAll: (req, res) => {},
+  getAll: (req, res) => { },
+  getById: (req, res) => { },
 }
 
-describe('When search for all products', () => {
+describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   const response = {};
   const request = {};
 
@@ -28,7 +29,7 @@ describe('When search for all products', () => {
   it('It should return code 200', async () => {
     await productsController.getAll(request, response);
 
-    // expect(response.status.calledWith(200)).to.be.equal(true);
+    expect(response.status.calledWith(200)).to.be.equal(true);
   });
 
   it('It should return an array', async () => {
@@ -56,4 +57,76 @@ describe('When search for all products', () => {
 
     expect(response.json.args[0][0][0]).to.all.keys('id', 'name');
   })
+});
+
+describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', () => {
+  const response = {};
+  const request = {};
+
+  describe('When the product is not found', () => {
+    before(() => {
+      const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+      sinon.stub(productsService, 'getById').resolves(executeResult);
+    });
+
+    after(() => {
+      productsService.getById.restore();
+    });
+
+    it('It should return code 404', async () => {
+      await productsController.getById(request, response);
+
+      expect(response.status.calledWith(404)).to.be.equal(true);
+    });
+
+    it('It should return an object', async () => {
+      await productsController.getById(request, response);
+
+
+      expect(response.json.args[0][0]).to.be.an('object');
+    });
+
+    it('The objects returned must has a message', async () => {
+      await productsController.getById(request, response);
+
+      expect(response.json.args[0][0]).to.all.keys('message');
+      expect(response.json.args[0][0].message).to.be.equal('Product not found');
+    })
+  });
+
+  describe('When the product is found', () => {
+    before(() => {
+      const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
+
+      response.status = sinon.stub().returns(response);
+      response.json = sinon.stub().returns();
+      sinon.stub(productsService, 'getById').resolves(executeResult);
+    });
+
+    after(() => {
+      productsService.getById.restore();
+    });
+
+    it('It should return code 200', async () => {
+      await productsController.getById(request, response);
+
+      expect(response.status.calledWith(200)).to.be.equal(true);
+    });
+
+    it('It should return an object', async () => {
+      await productsController.getById(request, response);
+
+
+      expect(response.json.args[0][0]).to.be.an('object');
+    });
+
+    it('The objects returned must has "id" and "name" keys', async () => {
+      await productsController.getById(request, response);
+
+      expect(response.json.args[0][0]).to.all.keys('id', 'name');
+    })
+  });
 });
