@@ -3,10 +3,7 @@ const { describe } = require('mocha');
 const sinon = require('sinon');
 
 const productsModel = require('../../../models/productsModel');
-const productsService = {
-  getAll: () => { },
-  getById: () => { },
-};
+const productsService = require('../../../services/productsService');
 
 describe('When search for all products', () => {
   before(() => {
@@ -16,7 +13,7 @@ describe('When search for all products', () => {
   });
 
   after(() => {
-    connection.execute.restore();
+    productsModel.getAll.restore();
   });
 
   it('It should return an array', async () => {
@@ -56,7 +53,7 @@ describe('When search for a specific product', () => {
   });
 
   after(() => {
-    connection.execute.restore();
+    productsModel.getById.restore();
   });
 
   it('It should return an object', async () => {
@@ -71,7 +68,7 @@ describe('When search for a specific product', () => {
     expect(result).to.all.keys('id', 'name');
   });
 
-  it('The product id must be equal to id pass by parameters', async () => {
+  it('The product id must be equal to id pass by parameter', async () => {
     const result = await productsService.getById(ID);
     const { id } = result;
 
