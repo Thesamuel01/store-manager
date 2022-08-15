@@ -3,16 +3,15 @@ const { describe } = require('mocha');
 const sinon = require('sinon');
 
 const productsService = require('../../../services/productsService');
-// const productsService = require('../../../controllers');
-
-const productsController = {
-  getAll: (req, res) => { },
-  getById: (req, res) => { },
-}
+const productsController = require('../../../controllers/productsController');
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   const response = {};
-  const request = {};
+  const request = {
+    params: {
+      id: 1,
+    }
+  };
 
   before(() => {
     const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
@@ -61,15 +60,17 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', () => {
   const response = {};
-  const request = {};
+  const request = {
+    params: {
+      id: 8,
+    }
+  };
 
   describe('When the product is not found', () => {
     before(() => {
-      const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
-
       response.status = sinon.stub().returns(response);
       response.json = sinon.stub().returns();
-      sinon.stub(productsService, 'getById').resolves(executeResult);
+      sinon.stub(productsService, 'getById').resolves();
     });
 
     after(() => {
@@ -99,7 +100,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
 
   describe('When the product is found', () => {
     before(() => {
-      const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
+      const executeResult = { id: 1, name: 'Martelo do Thor' };
 
       response.status = sinon.stub().returns(response);
       response.json = sinon.stub().returns();
