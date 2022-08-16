@@ -1,28 +1,21 @@
 const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised');
 const { describe } = require('mocha');
 const sinon = require('sinon');
+const { Boom } = require('@hapi/boom');
 
 // Codigo retirado da documentacao para usar o chai com promises
 const expect = chai.expect
-chai.use(require('chai-as-promised'));
+chai.use(chaiAsPromised);
 
 const productsService = require('../../../services/productsService');
 const productsController = require('../../../controllers/productsController');
-const { Boom } = require('@hapi/boom');
+const testController = require('../../helpers/testController');
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
-  const response = {};
-  const request = {
-    params: {
-      id: 1,
-    }
-  };
-
   before(() => {
     const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
 
-    response.status = sinon.stub().returns(response);
-    response.json = sinon.stub().returns();
     sinon.stub(productsService, 'getAll').resolves(executeResult);
   });
 
@@ -31,51 +24,40 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   });
 
   it('It should return code 200', async () => {
-    await productsController.getAll(request, response);
+    const result = await testController(productsController.getAll);
 
-    expect(response.status.calledWith(200)).to.be.equal(true);
+    expect(result.status).to.be.equal(200);
   });
 
   it('It should return an array', async () => {
-    await productsController.getAll(request, response);
+    const result = await testController(productsController.getAll);
 
-    expect(response.json.calledWith([{ id: 1, name: 'Martelo do Thor' }])).to.be.equal(true);
-    expect(response.json.args[0][0]).to.be.an('array');
+    expect(result.spies.json.calledOnce).to.be.true;
+    expect(result.body).to.be.an('array');
   });
 
   it('The array returned can not be empty', async () => {
-    await productsController.getAll(request, response);
+    const result = await testController(productsController.getAll);
 
-    expect(response.json.args[0][0]).to.be.not.empty;
+    expect(result.body).to.be.not.empty;
   });
 
   it('It should return an array of objects', async () => {
-    await productsController.getAll(request, response);
+    const result = await testController(productsController.getAll);
 
-
-    expect(response.json.args[0][0][0]).to.be.an('object');
+    expect(result.body[0]).to.be.an('object');
   });
 
   it('The objects from array must has "id" and "name" keys', async () => {
-    await productsController.getAll(request, response);
+    const result = await testController(productsController.getAll);
 
-    expect(response.json.args[0][0][0]).to.all.keys('id', 'name');
+    expect(result.body[0]).to.all.keys('id', 'name');
   })
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', () => {
-  const response = {};
-  const request = {
-    params: {
-      id: 8,
-    }
-  };
-
   describe('When the product is not found', () => {
     before(() => {
-      response.status = sinon.stub().returns(response);
-      response.json = sinon.stub().returns();
-
       sinon.stub(productsService, 'getById').resolves();
     });
 
@@ -84,7 +66,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
     });
 
     it('It should throw an error', async () => {
-      return expect(productsController.getById(request, response)).to.eventually
+      return expect(testController(productsController.getById, { params: { id: 8 } })).to.eventually
         .rejectedWith('Product not found')
         .and.be.an.instanceOf(Boom);
     });
@@ -94,8 +76,6 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
     before(() => {
       const executeResult = { id: 1, name: 'Martelo do Thor' };
 
-      response.status = sinon.stub().returns(response);
-      response.json = sinon.stub().returns();
       sinon.stub(productsService, 'getById').resolves(executeResult);
     });
 
@@ -104,22 +84,21 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
     });
 
     it('It should return code 200', async () => {
-      await productsController.getById(request, response);
+      const result = await testController(productsController.getById, { params: { id: 1 } });
 
-      expect(response.status.calledWith(200)).to.be.equal(true);
+      expect(result.status).to.be.equal(200);
     });
 
     it('It should return an object', async () => {
-      await productsController.getById(request, response);
+      const result = await testController(productsController.getById, { params: { id: 1 } });
 
-
-      expect(response.json.args[0][0]).to.be.an('object');
+      expect(result.body).to.be.an('object');
     });
 
     it('The objects returned must has "id" and "name" keys', async () => {
-      await productsController.getById(request, response);
+      const result = await testController(productsController.getById, { params: { id: 1 } });
 
-      expect(response.json.args[0][0]).to.all.keys('id', 'name');
+      expect(result.body).to.all.keys('id', 'name');
     })
   });
 });
