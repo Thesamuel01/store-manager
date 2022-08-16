@@ -1,5 +1,3 @@
-const rescue = require('express-rescue');
-
 const productService = require('../services/productsService');
 
 const getAll = async (_req, res) => {
@@ -11,10 +9,10 @@ const getAll = async (_req, res) => {
 const getById = async (req, res) => {
   const { id } = req.params;
   const products = await productService.getById(id);
+  throw new Error('deu ruim')
+  // if (!products) return res.status(404).json({ message: 'Product not found' });
 
-  if(!products) return res.status(404).json({ message: 'Product not found'});
-
-  res.status(200).json(products);
+  // res.status(200).json(products);
 };
 
 module.exports = {
