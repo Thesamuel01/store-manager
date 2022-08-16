@@ -1,3 +1,4 @@
+const Boom = require('@hapi/boom');
 const productService = require('../services/productsService');
 
 const getAll = async (_req, res) => {
@@ -10,7 +11,7 @@ const getById = async (req, res) => {
   const { id } = req.params;
   const products = await productService.getById(id);
 
-  if (!products) return res.status(404).json({ message: 'Product not found' });
+  if (!products) throw Boom.notFound('Product not found');
 
   return res.status(200).json(products);
 };
