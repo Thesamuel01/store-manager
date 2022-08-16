@@ -1,9 +1,14 @@
-const { expect } = require('chai');
+const chai = require('chai')
 const { describe } = require('mocha');
 const sinon = require('sinon');
 
+// Codigo retirado da documentacao para usar o chai com promises
+const expect = chai.expect
+chai.use(require('chai-as-promised'));
+
 const productsService = require('../../../services/productsService');
 const productsController = require('../../../controllers/productsController');
+const { Boom } = require('@hapi/boom');
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   const response = {};
@@ -70,6 +75,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
     before(() => {
       response.status = sinon.stub().returns(response);
       response.json = sinon.stub().returns();
+
       sinon.stub(productsService, 'getById').resolves();
     });
 
@@ -77,25 +83,11 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
       productsService.getById.restore();
     });
 
-    it('It should return code 404', async () => {
-      await productsController.getById(request, response);
-
-      expect(response.status.calledWith(404)).to.be.equal(true);
+    it('It should throw an error', async () => {
+      return expect(productsController.getById(request, response)).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
     });
-
-    it('It should return an object', async () => {
-      await productsController.getById(request, response);
-
-
-      expect(response.json.args[0][0]).to.be.an('object');
-    });
-
-    it('The objects returned must has a message', async () => {
-      await productsController.getById(request, response);
-
-      expect(response.json.args[0][0]).to.all.keys('message');
-      expect(response.json.args[0][0].message).to.be.equal('Product not found');
-    })
   });
 
   describe('When the product is found', () => {
