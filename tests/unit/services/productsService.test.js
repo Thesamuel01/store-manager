@@ -75,3 +75,34 @@ describe('TEST CASE PRODUCT SERVICE - When search for a specific product', () =>
     expect(id).to.be.equal(ID);
   })
 });
+
+describe('TEST CASE PRODUCT SERVICE - When a product is created', () => {
+  const productCreated = { id: 4, name: 'ProdutoX' };
+
+  before(() => {
+    sinon.stub(productsModel, 'create').resolves(productCreated);
+  });
+
+  after(() => {
+    productsModel.create.restore();
+  });
+
+  it('It should return an object', async () => {
+    const result = await productsService.create('ProdutoX');
+
+    expect(result).to.be.an('object');
+  });
+
+  it('The object returned must have "id" and "name" keys', async () => {
+    const result = await productsService.create('ProdutoX');
+
+    expect(result).to.all.keys('id', 'name');
+  });
+
+  it('The object returned should be the product created', async () => {
+    const { id, name } = await productsService.create('ProdutoX');
+
+    expect(id).to.be.equal(productCreated.id);
+    expect(name).to.be.equal(productCreated.name);
+  });
+});
