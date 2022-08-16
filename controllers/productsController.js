@@ -9,10 +9,10 @@ const getAll = async (_req, res) => {
 const getById = async (req, res) => {
   const { id } = req.params;
   const products = await productService.getById(id);
-  throw new Error('deu ruim')
-  // if (!products) return res.status(404).json({ message: 'Product not found' });
 
-  // res.status(200).json(products);
+  if (!products) return res.status(404).json({ message: 'Product not found' });
+
+  return res.status(200).json(products);
 };
 
 module.exports = {

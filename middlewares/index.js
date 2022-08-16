@@ -1,4 +1,4 @@
-const errorMiddleware = require("./errorMiddleware");
+const errorMiddleware = require('./errorMiddleware');
 
 module.exports = {
   errorMiddleware,
