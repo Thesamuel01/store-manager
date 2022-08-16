@@ -14,9 +14,7 @@ const testController = require('../../helpers/testController');
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   before(() => {
-    const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
-
-    sinon.stub(productsService, 'getAll').resolves(executeResult);
+    sinon.stub(productsService, 'getAll').resolves([{ id: 1, name: 'Martelo do Thor' }]);
   });
 
   after(() => {
@@ -72,7 +70,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
     });
   });
 
-  describe('When the product is found', () => {
+  describe('TEST CASE PRODUCT CONTROLLER - When the product is found', () => {
     before(() => {
       const executeResult = { id: 1, name: 'Martelo do Thor' };
 
@@ -100,5 +98,60 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
 
       expect(result.body).to.all.keys('id', 'name');
     })
+  });
+});
+
+describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => {
+  describe('When was not pass any name in body requisition', () => {
+    before(() => {
+      sinon.stub(productsService, 'create').resolves();
+    });
+
+    after(() => {
+      productsService.create.restore();
+    });
+
+    it('It should throw an error', async () => {
+      return expect(testController(productsController.create, { params: { id: 8 } })).to.eventually
+        .rejectedWith('Name is empty')
+        .and.be.an.instanceOf(Boom);
+    });
+  });
+
+  describe('TEST CASE PRODUCT CONTROLLER - When the product is created', () => {
+    const productCreated = { id: 4, name: 'ProdutoX' };
+
+    before(() => {
+      sinon.stub(productsService, 'create').resolves({ id: 1, name: 'Martelo do Thor' });
+    });
+
+    after(() => {
+      productsService.create.restore();
+    });
+
+    it('It should return code 201', async () => {
+      const result = await testController(productsController.create, { params: { id: 1 } });
+
+      expect(result.status).to.be.equal(201);
+    });
+
+    it('It should return an object', async () => {
+      const result = await testController(productsController.create, { params: { id: 1 } });
+
+      expect(result.body).to.be.an('object');
+    });
+
+    it('The objects returned must has "id" and "name" keys', async () => {
+      const result = await testController(productsController.create, { params: { id: 1 } });
+
+      expect(result.body).to.all.keys('id', 'name');
+    })
+
+    it('The object returned should have infos about the product created', async () => {
+      const result = await testController(productsController.create, { body: { name: 'ProductX' } });
+
+      expect(result.body.id).to.be.equal(productCreated.id);
+      expect(result.body.name).to.be.equal(productCreated.name);
+    });
   });
 });
