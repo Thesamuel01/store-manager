@@ -99,7 +99,7 @@ describe('TEST CASE PRODUCT SERVICE - When a product is created', () => {
     expect(result).to.all.keys('id', 'name');
   });
 
-  it('The object returned should be the product created', async () => {
+  it('The object returned should have infos about the product created', async () => {
     const { id, name } = await productsService.create('ProdutoX');
 
     expect(id).to.be.equal(productCreated.id);
