@@ -74,3 +74,27 @@ describe('TEST CASE PRODUCT MODEL - When search for a specific product on databa
     expect(id).to.be.equal(ID);
   })
 });
+
+describe('TEST CASE PRODUCT MODEL - When a product is insert into database', () => {
+  before(() => {
+    const executeResult = [{ affectedRows: 1, insertId: 4 }, undefined];
+
+    sinon.stub(connection, 'execute').resolves(executeResult);
+  });
+
+  after(() => {
+    connection.execute.restore();
+  });
+
+  it('It should return an object', async () => {
+    const result = await productsModel.create('ProdutoX');
+
+    expect(result).to.be.an('object');
+  });
+
+  it('The object returned must have "id" and "name" keys', async () => {
+    const result = await productsModel.create('ProdutoX');
+
+    expect(result).to.all.keys('id', 'name');
+  });
+});
