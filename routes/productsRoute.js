@@ -9,4 +9,6 @@ productsRoute.get('/', rescue(productsController.getAll));
 
 productsRoute.get('/:id', rescue(productsController.getById));
 
+productsRoute.post('/', rescue(productsController.create));
+
 module.exports = productsRoute;
