@@ -80,6 +80,6 @@ describe('TEST CASE SALE MODEL - When search for a specific sale on database', (
   it('The sale id must be equal to id pass by parameters', async () => {
     const result = await salesModel.getById(ID);
     
-    result.forEach(({ id }) => expect(id).to.be.equal(ID));
+    result.forEach(({ saleId }) => expect(saleId).to.be.equal(ID));
   })
 });
