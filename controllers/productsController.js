@@ -1,5 +1,6 @@
 const Boom = require('@hapi/boom');
 const productService = require('../services/productsService');
+const ProductSchema = require('../schemas/productSchema');
 
 const getAll = async (_req, res) => {
   const products = await productService.getAll();
@@ -17,9 +18,9 @@ const getById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { name } = req.body;
+  const { error, value: { name } } = ProductSchema.validate(req.body.name);
 
-  if (!name || name.length === 0) throw Boom.badRequest('Name is empty');
+  if (error) throw Boom.badRequest(error.message);
 
   const result = await productService.create(name);
 
