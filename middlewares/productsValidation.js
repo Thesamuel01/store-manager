@@ -14,6 +14,4 @@ const productsMidleware = (req, _res, next) => {
   next();
 };
 
-module.exports = {
-  productsMidleware,
-};
+module.exports = productsMidleware;
