@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { describe } = require('mocha');
+const { describe, beforeEach } = require('mocha');
 const sinon = require('sinon');
 const connection = require('../../../models/connection');
 
@@ -86,13 +86,17 @@ describe('TEST CASE SALE MODEL - When search for a specific sale on database', (
 });
 
 describe('TEST CASE SALE MODEL - When a product is insert into database', () => {
-  before(() => {
-    const executeResult = [{ affectedRows: 1, insertId: 4 }, undefined];
+  beforeEach(() => {
+    const firstCall = [{ insertId: 3 }, undefined];
+    const nthCalls = [{}, undefined];
 
-    sinon.stub(connection, 'execute').resolves(executeResult);
+    const funcStub = sinon.stub(connection, 'execute');
+
+    funcStub.onFirstCall().resolves(firstCall);
+    funcStub.resolves(nthCalls);
   });
 
-  after(() => {
+  afterEach(() => {
     connection.execute.restore();
   });
 
@@ -104,9 +108,8 @@ describe('TEST CASE SALE MODEL - When a product is insert into database', () => 
 
   it('The object returned must have "id" and "itemsSold keys', async () => {
     const result = await salesModel.create(productsSold);
-    const item = result[0];
 
-    expect(item).to.all.keys('id', 'itemsSold');
+    expect(result).to.all.keys('id', 'itemsSold');
   });
 
   it('The itemsSold key must have an array with the products sold', async () => {
