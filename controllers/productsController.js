@@ -16,7 +16,18 @@ const getById = async (req, res) => {
   return res.status(200).json(products);
 };
 
+const create = async (req, res) => {
+  const { name } = req.body;
+
+  if (!name || name.length === 0) throw Boom.badRequest('Name is empty');
+
+  const result = await productService.create(name);
+
+  return res.status(201).json(result);
+};
+
 module.exports = {
   getAll,
   getById,
+  create,
 };

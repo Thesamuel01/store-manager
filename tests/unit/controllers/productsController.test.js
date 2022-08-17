@@ -112,7 +112,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => 
     });
 
     it('It should throw an error', async () => {
-      return expect(testController(productsController.create, { params: { id: 8 } })).to.eventually
+      return expect(testController(productsController.create, { body: { id: 8 } })).to.eventually
         .rejectedWith('Name is empty')
         .and.be.an.instanceOf(Boom);
     });
@@ -122,7 +122,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => 
     const productCreated = { id: 4, name: 'ProdutoX' };
 
     before(() => {
-      sinon.stub(productsService, 'create').resolves({ id: 1, name: 'Martelo do Thor' });
+      sinon.stub(productsService, 'create').resolves(productCreated);
     });
 
     after(() => {
@@ -130,19 +130,19 @@ describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => 
     });
 
     it('It should return code 201', async () => {
-      const result = await testController(productsController.create, { params: { id: 1 } });
+      const result = await testController(productsController.create, { body: { name: 'ProductX' } });
 
       expect(result.status).to.be.equal(201);
     });
 
     it('It should return an object', async () => {
-      const result = await testController(productsController.create, { params: { id: 1 } });
+      const result = await testController(productsController.create, { body: { name: 'ProductX' } });
 
       expect(result.body).to.be.an('object');
     });
 
     it('The objects returned must has "id" and "name" keys', async () => {
-      const result = await testController(productsController.create, { params: { id: 1 } });
+      const result = await testController(productsController.create, { body: { name: 'ProductX' } });
 
       expect(result.body).to.all.keys('id', 'name');
     })
