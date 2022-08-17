@@ -102,22 +102,6 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => {
-  describe('When was not pass any name in body requisition', () => {
-    before(() => {
-      sinon.stub(productsService, 'create').resolves();
-    });
-
-    after(() => {
-      productsService.create.restore();
-    });
-
-    it('It should throw an error', async () => {
-      return expect(testController(productsController.create, { body: { id: 8 } })).to.eventually
-        .rejectedWith('Name is empty')
-        .and.be.an.instanceOf(Boom);
-    });
-  });
-
   describe('TEST CASE PRODUCT CONTROLLER - When the product is created', () => {
     const productCreated = { id: 4, name: 'ProdutoX' };
 
