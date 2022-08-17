@@ -2,6 +2,7 @@ const express = require('express');
 const rescue = require('express-rescue');
 
 const productsController = require('../controllers/productsController');
+const productsValidate = require('../middlewares/productsValidation');
 
 const productsRoute = express.Router();
 
@@ -9,6 +10,9 @@ productsRoute.get('/', rescue(productsController.getAll));
 
 productsRoute.get('/:id', rescue(productsController.getById));
 
-productsRoute.post('/', rescue(productsController.create));
+productsRoute.post('/', [
+  rescue(productsValidate.productsMidleware),
+  rescue(productsController.create),
+]);
 
 module.exports = productsRoute;

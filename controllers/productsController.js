@@ -1,6 +1,5 @@
-const Boom = require('@hapi/boom');
+const boom = require('@hapi/boom');
 const productService = require('../services/productsService');
-const ProductSchema = require('../schemas/productSchema');
 
 const getAll = async (_req, res) => {
   const products = await productService.getAll();
@@ -12,15 +11,13 @@ const getById = async (req, res) => {
   const { id } = req.params;
   const products = await productService.getById(id);
 
-  if (!products) throw Boom.notFound('Product not found');
+  if (!products) throw boom.notFound('Product not found');
 
   return res.status(200).json(products);
 };
 
 const create = async (req, res) => {
-  const { error, value: { name } } = ProductSchema.validate(req.body.name);
-
-  if (error) throw Boom.badRequest(error.message);
+  const { name } = req.body;
 
   const result = await productService.create(name);
 
