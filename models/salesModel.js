@@ -43,13 +43,13 @@ const create = async (itemsSold) => {
     await connection.execute(
       'INSERT INTO StoreManager.sales (sales_id, product_id, quantity) VALUES (?, ?, ?)',
       [saleRows.insertId, productId, quantity],
-    )
+    );
   });
 
   return {
     id: saleRows.insertId,
-    itemsSold,  
-  }
+    itemsSold,
+  };
 };
 
 module.exports = {
