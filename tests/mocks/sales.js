@@ -45,8 +45,14 @@ const PRODUCTS_SOLDS = [
   }
 ];
 
+const SALE_CREATED = {
+  id: 3,
+  itemsSold: { ...PRODUCTS_SOLDS },
+};
+
 module.exports = {
   ALL_SALES_MOCK,
   SALE_BY_ID_MOCK,
   PRODUCTS_SOLDS,
+  SALE_CREATED,
 };
