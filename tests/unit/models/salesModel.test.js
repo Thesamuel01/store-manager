@@ -4,10 +4,7 @@ const sinon = require('sinon');
 const connection = require('../../../models/connection');
 
 const ALL_SALES_RETURN = require('../../mocks/sales');
-
-const salesModel = {
-  getAll: () => {},
-};
+const salesModel = require('../../../models/salesModel');
 
 describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
   before(() => {
@@ -40,11 +37,11 @@ describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
     expect(item).to.be.an('object');
   });
 
-  it('The objects from array must has "salesId", "date", "productId and "quantity" keys', async () => {
+  it('The objects from array must has "saleId", "date", "productId and "quantity" keys', async () => {
     const result = await salesModel.getAll();
     const item = result[0];
 
-    expect(item).to.all.keys('salesId', 'date', 'productId', 'quantity');
+    expect(item).to.all.keys('saleId', 'date', 'productId', 'quantity');
   })
 });
 
