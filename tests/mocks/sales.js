@@ -34,7 +34,19 @@ const SALE_BY_ID_MOCK = [
   },
 ];
 
+const PRODUCTS_SOLDS = [
+  {
+    productId: 1,
+    quantity: 1
+  },
+  {
+    productId: 2,
+    quantity: 5
+  }
+];
+
 module.exports = {
   ALL_SALES_MOCK,
   SALE_BY_ID_MOCK,
+  PRODUCTS_SOLDS,
 };

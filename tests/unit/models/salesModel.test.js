@@ -3,11 +3,12 @@ const { describe } = require('mocha');
 const sinon = require('sinon');
 const connection = require('../../../models/connection');
 
-const { ALL_SALES_MOCK, SALE_BY_ID_MOCK } = require('../../mocks/sales');
+const mock = require('../../mocks/sales');
 const salesModel = require('../../../models/salesModel');
 
-const allSales = [...ALL_SALES_MOCK];
-const sale = [...SALE_BY_ID_MOCK];
+const allSales = [...mock.ALL_SALES_MOCK];
+const sale = [...mock.SALE_BY_ID_MOCK];
+const productsSold = [...mock.PRODUCTS_SOLDS];
 
 describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
   before(() => {
@@ -18,7 +19,7 @@ describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
     connection.execute.restore();
   });
 
-  it('It should return an array', async () => {
+  it('It must return an array', async () => {
     const result = await salesModel.getAll();
 
     expect(result).to.be.an('array');
@@ -30,7 +31,7 @@ describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
     expect(result).to.be.not.empty;
   });
 
-  it('It should return an array of objects', async () => {
+  it('It must return an array of objects', async () => {
     const result = await salesModel.getAll();
     const item = result[0];
 
@@ -42,7 +43,7 @@ describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
     const item = result[0];
 
     expect(item).to.all.keys('saleId', 'date', 'productId', 'quantity');
-  })
+  });
 });
 
 describe('TEST CASE SALE MODEL - When search for a specific sale on database', () => {
@@ -58,7 +59,7 @@ describe('TEST CASE SALE MODEL - When search for a specific sale on database', (
     connection.execute.restore();
   });
 
-  it('It should return an array', async () => {
+  it('It must return an array', async () => {
     const result = await salesModel.getById(ID);
 
     expect(result).to.be.an('array');
@@ -70,16 +71,47 @@ describe('TEST CASE SALE MODEL - When search for a specific sale on database', (
     expect(result).to.be.not.empty;
   });
 
-  it('The objects from array must has "saleId", "date", "productId and "quantity" keys', async () => {
+  it('The objects from array must has "saleId", "date", "productId" and "quantity" keys', async () => {
     const result = await salesModel.getById(ID);
     const item = result[0];
 
     expect(item).to.all.keys('saleId', 'date', 'productId', 'quantity');
-  })
+  });
 
   it('The sale id must be equal to id pass by parameters', async () => {
     const result = await salesModel.getById(ID);
     
     result.forEach(({ saleId }) => expect(saleId).to.be.equal(ID));
-  })
+  });
+});
+
+describe('TEST CASE SALE MODEL - When a product is insert into database', () => {
+  before(() => {
+    const executeResult = [{ affectedRows: 1, insertId: 4 }, undefined];
+
+    sinon.stub(connection, 'execute').resolves(executeResult);
+  });
+
+  after(() => {
+    connection.execute.restore();
+  });
+
+  it('It must return an object', async () => {
+    const result = await salesModel.create(productsSold);
+
+    expect(result).to.be.an('object');
+  });
+
+  it('The object returned must have "id" and "itemsSold keys', async () => {
+    const result = await salesModel.create(productsSold);
+    const item = result[0];
+
+    expect(item).to.all.keys('id', 'itemsSold');
+  });
+
+  it('The itemsSold key must have an array with the products sold', async () => {
+    const { itemsSold } = await salesModel.create(productsSold);
+
+    expect(itemsSold).to.eql(productsSold);
+  });
 });
