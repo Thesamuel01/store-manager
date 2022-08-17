@@ -11,10 +11,14 @@ chai.use(chaiAsPromised);
 const productsService = require('../../../services/productsService');
 const productsController = require('../../../controllers/productsController');
 const testController = require('../../helpers/testController');
+const { ALL_PRODUCTS_MOCK, PRODUCT_BY_ID_MOCK } = require('../../mocks/products');
+
+const allProducts = [...ALL_PRODUCTS_MOCK];
+const product = { ...PRODUCT_BY_ID_MOCK };
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   before(() => {
-    sinon.stub(productsService, 'getAll').resolves([{ id: 1, name: 'Martelo do Thor' }]);
+    sinon.stub(productsService, 'getAll').resolves(allProducts);
   });
 
   after(() => {
@@ -72,9 +76,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
 
   describe('TEST CASE PRODUCT CONTROLLER - When the product is found', () => {
     before(() => {
-      const executeResult = { id: 1, name: 'Martelo do Thor' };
-
-      sinon.stub(productsService, 'getById').resolves(executeResult);
+      sinon.stub(productsService, 'getById').resolves(product);
     });
 
     after(() => {

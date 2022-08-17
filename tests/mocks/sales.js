@@ -1,16 +1,40 @@
-const ALL_SALES_RETURN = [
+const ALL_SALES_MOCK = [
   {
     saleId: 1,
-    date: '2021-09-09T04:54:29.000Z',
+    date: '2022-05-27T01:59:51.000Z',
     productId: 1,
-    quantity: 2
+    quantity: 5
   },
   {
     saleId: 1,
-    date: '2021-09-09T04:54:54.000Z',
+    date: '2022-05-27T01:59:51.000Z',
     productId: 2,
-    quantity: 2
+    quantity: 10
+  },
+  {
+    saleId: 2,
+    date: '2022-05-27T01:59:51.000Z',
+    productId: 3,
+    quantity: 15
   },
 ];
 
-module.exports = ALL_SALES_RETURN;
+const SALE_BY_ID_MOCK = [
+  {
+    saleId: 1,
+    date: '2022-05-27T01:59:51.000Z',
+    productId: 1,
+    quantity: 5
+  },
+  {
+    saleId: 1,
+    date: '2022-05-27T01:59:51.000Z',
+    productId: 2,
+    quantity: 10
+  },
+];
+
+module.exports = {
+  ALL_SALES_MOCK,
+  SALE_BY_ID_MOCK,
+};

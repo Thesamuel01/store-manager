@@ -4,12 +4,14 @@ const sinon = require('sinon');
 
 const productsModel = require('../../../models/productsModel');
 const productsService = require('../../../services/productsService');
+const { ALL_PRODUCTS_MOCK, PRODUCT_BY_ID_MOCK } = require('../../mocks/products');
+
+const allProducts = [...ALL_PRODUCTS_MOCK];
+const product = { ...PRODUCT_BY_ID_MOCK };
 
 describe('TEST CASE PRODUCT SERVICE - When search for all products', () => {
   before(() => {
-    const executeResult = [{ id: 1, name: 'Martelo do Thor' }];
-
-    sinon.stub(productsModel, 'getAll').resolves(executeResult);
+    sinon.stub(productsModel, 'getAll').resolves(allProducts);
   });
 
   after(() => {
@@ -47,9 +49,7 @@ describe('TEST CASE PRODUCT SERVICE - When search for a specific product', () =>
   const ID = 1;
 
   before(() => {
-    const executeResult = { id: 1, name: 'Martelo do Thor' };
-
-    sinon.stub(productsModel, 'getById').resolves(executeResult);
+    sinon.stub(productsModel, 'getById').resolves(product);
   });
 
   after(() => {

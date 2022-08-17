@@ -3,15 +3,15 @@ const { describe } = require('mocha');
 const sinon = require('sinon');
 const connection = require('../../../models/connection');
 
-const ALL_SALES_RETURN = require('../../mocks/sales');
+const { ALL_SALES_MOCK, SALE_BY_ID_MOCK } = require('../../mocks/sales');
 const salesModel = require('../../../models/salesModel');
+
+const allSales = [...ALL_SALES_MOCK];
+const sale = [...SALE_BY_ID_MOCK];
 
 describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
   before(() => {
-    const sales = ALL_SALES_RETURN;
-    const executeResult = [sales, []];
-
-    sinon.stub(connection, 'execute').resolves(executeResult);
+    sinon.stub(connection, 'execute').resolves([allSales, []]);
   });
 
   after(() => {
@@ -45,35 +45,41 @@ describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
   })
 });
 
-// describe('TEST CASE PRODUCT MODEL - When search for a specific product on database', () => {
-//   const ID = 1;
+describe('TEST CASE SALE MODEL - When search for a specific sale on database', () => {
+  const ID = 1;
 
-//   before(() => {
-//     const executeResult = [[{ id: 1, name: 'Martelo do Thor' }], []];
+  before(() => {
+    const executeResult = [sale, []];
 
-//     sinon.stub(connection, 'execute').resolves(executeResult);
-//   });
+    sinon.stub(connection, 'execute').resolves(executeResult);
+  });
 
-//   after(() => {
-//     connection.execute.restore();
-//   });
+  after(() => {
+    connection.execute.restore();
+  });
 
-//   it('It should return an object', async () => {
-//     const result = await productsModel.getById(ID);
+  it('It should return an array', async () => {
+    const result = await salesModel.getById(ID);
 
-//     expect(result).to.be.an('object');
-//   });
+    expect(result).to.be.an('array');
+  });
 
-//   it('The object returned must have "id" and "name" keys', async () => {
-//     const result = await productsModel.getById(ID);
+  it('The array returned can not be empty', async () => {
+    const result = await salesModel.getById(ID);
 
-//     expect(result).to.all.keys('id', 'name');
-//   });
+    expect(result).to.be.not.empty;
+  });
 
-//   it('The product id must be equal to id pass by parameters', async () => {
-//     const result = await productsModel.getById(ID);
-//     const { id } = result;
+  it('The objects from array must has "saleId", "date", "productId and "quantity" keys', async () => {
+    const result = await salesModel.getById(ID);
+    const item = result[0];
 
-//     expect(id).to.be.equal(ID);
-//   })
-// });
+    expect(item).to.all.keys('saleId', 'date', 'productId', 'quantity');
+  })
+
+  it('The sale id must be equal to id pass by parameters', async () => {
+    const result = await salesModel.getById(ID);
+    
+    result.forEach(({ id }) => expect(id).to.be.equal(ID));
+  })
+});

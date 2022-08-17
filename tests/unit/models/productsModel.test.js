@@ -1,12 +1,17 @@
 const { expect } = require('chai');
 const { describe } = require('mocha');
 const sinon = require('sinon');
+
 const connection = require('../../../models/connection');
 const productsModel = require('../../../models/productsModel');
+const { ALL_PRODUCTS_MOCK, PRODUCT_BY_ID_MOCK } = require('../../mocks/products');
+
+const allProducts = [...ALL_PRODUCTS_MOCK];
+const product = { ...PRODUCT_BY_ID_MOCK };
 
 describe('TEST CASE PRODUCT MODEL - When search for all products on database', () => {
   before(() => {
-    const executeResult = [[{ id: 1, name: 'Martelo do Thor' }], []];
+    const executeResult = [allProducts, []];
 
     sinon.stub(connection, 'execute').resolves(executeResult);
   });
@@ -46,9 +51,7 @@ describe('TEST CASE PRODUCT MODEL - When search for a specific product on databa
   const ID = 1;
 
   before(() => {
-    const executeResult = [[{ id: 1, name: 'Martelo do Thor' }], []];
-
-    sinon.stub(connection, 'execute').resolves(executeResult);
+    sinon.stub(connection, 'execute').resolves([[product], []]);
   });
 
   after(() => {
