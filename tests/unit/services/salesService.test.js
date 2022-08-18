@@ -3,6 +3,7 @@ const { describe, beforeEach } = require('mocha');
 const sinon = require('sinon');
 
 const salesModel = require('../../../models/salesModel');
+const salesService = require('../../../services/salesService');
 const mock = require('../../mocks/sales');
 
 const allSales = [...mock.ALL_SALES_MOCK];
@@ -10,19 +11,13 @@ const sales = [...mock.SALE_BY_ID_MOCK];
 const productsSold = [...mock.PRODUCTS_SOLDS];
 const saleCreated = { ...mock.SALE_CREATED };
 
-const salesService = {
-  getAll: () => {},
-  getById: () => {},
-  create: () => {},
-};
-
 describe('TEST CASE SALE SERVICE - When search for all sales on database', () => {
   before(() => {
     sinon.stub(salesModel, 'getAll').resolves(allSales);
   });
 
   after(() => {
-    connection.execute.restore();
+    salesModel.getAll.restore();
   });
 
   it('It must return an array', async () => {
@@ -60,7 +55,7 @@ describe('TEST CASE SALE SERVICE - When search for a specific sale on database',
   });
 
   after(() => {
-    connection.execute.restore();
+    salesModel.getById.restore();
   });
 
   it('It must return an array', async () => {
@@ -95,7 +90,7 @@ describe('TEST CASE SALE SERVICE - When a product is insert into database', () =
   });
 
   afterEach(() => {
-    connection.execute.restore();
+    salesModel.create.restore();
   });
 
   it('It must return an object', async () => {

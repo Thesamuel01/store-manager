@@ -47,7 +47,7 @@ const PRODUCTS_SOLDS = [
 
 const SALE_CREATED = {
   id: 3,
-  itemsSold: { ...PRODUCTS_SOLDS },
+  itemsSold: [...PRODUCTS_SOLDS],
 };
 
 module.exports = {
