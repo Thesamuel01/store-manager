@@ -10,7 +10,8 @@ const getAll = async () => {
       S.date
     FROM StoreManager.sales AS S
     INNER JOIN StoreManager.sales_products AS SP
-    ON S.id = SP.sale_id; 
+    ON S.id = SP.sale_id
+    ORDER BY salesId ASC, productId DESC;
     `,
   );
 
@@ -28,7 +29,8 @@ const getById = async (id) => {
     FROM StoreManager.sales AS S
     INNER JOIN StoreManager.sales_products AS SP
     ON S.id = SP.sale_id
-    WHERE SP.sale_id = ?; 
+    WHERE SP.sale_id = ?
+    ORDER BY salesId ASC, productId DESC; 
     `,
     [id],
   );
