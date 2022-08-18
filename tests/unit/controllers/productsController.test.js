@@ -74,7 +74,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
     });
   });
 
-  describe('TEST CASE PRODUCT CONTROLLER - When the product is found', () => {
+  describe('When the product is found', () => {
     before(() => {
       sinon.stub(productsService, 'getById').resolves(product);
     });
@@ -104,7 +104,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', ()
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => {
-  describe('TEST CASE PRODUCT CONTROLLER - When the product is created', () => {
+  describe('When the product is created', () => {
     const productCreated = { id: 4, name: 'ProdutoX' };
 
     before(() => {

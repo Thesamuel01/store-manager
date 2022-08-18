@@ -84,7 +84,7 @@ describe('TEST CASE SALE SERVICE - When search for a specific sale on database',
   });
 });
 
-describe('TEST CASE SALE SERVICE - When a product is insert into database', () => {
+describe('TEST CASE SALE SERVICE - When a sale is insert into database', () => {
   beforeEach(() => {
     sinon.stub(salesModel, 'create').resolves(saleCreated);
   });

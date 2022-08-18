@@ -9,6 +9,7 @@ const expect = chai.expect
 chai.use(chaiAsPromised);
 
 const salesService = require('../../../services/salesService');
+const salesController = require('../../../controllers/salesController');
 const testController = require('../../helpers/testController');
 const mock = require('../../mocks/sales');
 
@@ -17,7 +18,7 @@ const sales = [...mock.SALE_BY_ID_MOCK];
 const productsSold = [...mock.PRODUCTS_SOLDS];
 const saleCreated = { ...mock.SALE_CREATED };
 
-describe('TEST CASE SALE CONTROLLER - When search for all products', () => {
+describe('TEST CASE SALE CONTROLLER - When search for all sale', () => {
   before(() => {
     sinon.stub(salesService, 'getAll').resolves(allSales);
   });
@@ -58,7 +59,7 @@ describe('TEST CASE SALE CONTROLLER - When search for all products', () => {
   });
 });
 
-describe('TEST CASE SALE CONTROLLER - When search for a specific product', () => {
+describe('TEST CASE SALE CONTROLLER - When search for a specific sale', () => {
   describe('When the product is not found', () => {
     before(() => {
       sinon.stub(salesService, 'getById').resolves();
@@ -104,8 +105,8 @@ describe('TEST CASE SALE CONTROLLER - When search for a specific product', () =>
   });
 });
 
-describe('TEST CASE SALE CONTROLLER - When add a product in database', () => {
-  describe('When the product is created', () => {
+describe('TEST CASE SALE CONTROLLER - When add a sale in database', () => {
+  describe('When the sale is created', () => {
     before(() => {
       sinon.stub(salesService, 'create').resolves(saleCreated);
     });
