@@ -14,7 +14,12 @@ const PRODUCT_BY_ID_MOCK = {
   name: 'Martelo do Thor',
 };
 
+const PRODUCT_UPDATE = {
+  name: 'Martelo do Batman',
+}
+
 module.exports = {
   ALL_PRODUCTS_MOCK,
   PRODUCT_BY_ID_MOCK,
+  PRODUCT_UPDATE,
 }

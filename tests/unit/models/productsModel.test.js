@@ -4,10 +4,11 @@ const sinon = require('sinon');
 
 const connection = require('../../../models/connection');
 const productsModel = require('../../../models/productsModel');
-const { ALL_PRODUCTS_MOCK, PRODUCT_BY_ID_MOCK } = require('../../mocks/products');
+const mock = require('../../mocks/products');
 
-const allProducts = [...ALL_PRODUCTS_MOCK];
-const product = { ...PRODUCT_BY_ID_MOCK };
+const allProducts = [...mock.ALL_PRODUCTS_MOCK];
+const product = { ...mock.PRODUCT_BY_ID_MOCK };
+const newValue = { ...mock.PRODUCT_UPDATE };
 
 describe('TEST CASE PRODUCT MODEL - When search for all products on database', () => {
   before(() => {
@@ -97,6 +98,30 @@ describe('TEST CASE PRODUCT MODEL - When a product is insert into database', () 
 
   it('The object returned must have "id" and "name" keys', async () => {
     const result = await productsModel.create('ProdutoX');
+
+    expect(result).to.all.keys('id', 'name');
+  });
+});
+
+describe('TEST CASE PRODUCT MODEL - When a product updated', () => {
+  before(() => {
+    const executeResult = [{ affectedRows: 1, insertId: 4 }, undefined];
+
+    sinon.stub(connection, 'execute').resolves(executeResult);
+  });
+
+  after(() => {
+    connection.execute.restore();
+  });
+
+  it('It should return an object', async () => {
+    const result = await productsModel.update();
+
+    expect(result).to.be.an('object');
+  });
+
+  it('The object returned must have "id" and "name" keys', async () => {
+    const result = await productsModel.update(1, newValue);
 
     expect(result).to.all.keys('id', 'name');
   });
