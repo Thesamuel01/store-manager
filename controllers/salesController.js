@@ -1,5 +1,6 @@
 const boom = require('@hapi/boom');
 const salesService = require('../services/salesService');
+const productsService = require('../services/productsService');
 
 const getAll = async (_req, res) => {
   const products = await salesService.getAll();
@@ -16,8 +17,21 @@ const getById = async (req, res) => {
   return res.status(200).json(products);
 };
 
+const checkProductsIdExist = async (array) => {
+  const products = await productsService.getAll();
+
+  const hasAnInvalidId = array.some(({ productId }) => !products.find(({ id }) => id === productId));
+
+  return hasAnInvalidId;
+};
+
 const create = async (req, res) => {
-  const result = await salesService.create(req.body);
+  const sales = req.body;
+  const hasAnInvalidId = await checkProductsIdExist(sales);
+
+  if (hasAnInvalidId) throw boom.notFound('Product not found');
+
+  const result = await salesService.create(sales);
 
   return res.status(201).json(result);
 };
