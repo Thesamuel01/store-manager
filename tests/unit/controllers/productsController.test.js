@@ -11,10 +11,10 @@ chai.use(chaiAsPromised);
 const productsService = require('../../../services/productsService');
 const productsController = require('../../../controllers/productsController');
 const testController = require('../../helpers/testController');
-const { ALL_PRODUCTS_MOCK, PRODUCT_BY_ID_MOCK } = require('../../mocks/products');
+const mock = require('../../mocks/products');
 
-const allProducts = [...ALL_PRODUCTS_MOCK];
-const product = { ...PRODUCT_BY_ID_MOCK };
+const allProducts = [...mock.ALL_PRODUCTS_MOCK];
+const product = { ...mock.PRODUCT_BY_ID_MOCK };
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   before(() => {

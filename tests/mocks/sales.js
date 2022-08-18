@@ -50,9 +50,21 @@ const SALE_CREATED = {
   itemsSold: [...PRODUCTS_SOLDS],
 };
 
+const INVALID_SALE_DATA = [
+  {
+    productId: 1,
+    quantity: 1
+  },
+  {
+    productId: 22,
+    quantity: 5
+  }
+];
+
 module.exports = {
   ALL_SALES_MOCK,
   SALE_BY_ID_MOCK,
   PRODUCTS_SOLDS,
   SALE_CREATED,
+  INVALID_SALE_DATA,
 };

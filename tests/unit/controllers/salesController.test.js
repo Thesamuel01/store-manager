@@ -9,14 +9,18 @@ const expect = chai.expect
 chai.use(chaiAsPromised);
 
 const salesService = require('../../../services/salesService');
+const productsService = require('../../../services/productsService');
 const salesController = require('../../../controllers/salesController');
 const testController = require('../../helpers/testController');
-const mock = require('../../mocks/sales');
+const salesMock = require('../../mocks/sales');
+const productsMock = require('../../mocks/products');
+const allProducts = [...productsMock.ALL_PRODUCTS_MOCK];
 
-const allSales = [...mock.ALL_SALES_MOCK];
-const sales = [...mock.SALE_BY_ID_MOCK];
-const productsSold = [...mock.PRODUCTS_SOLDS];
-const saleCreated = { ...mock.SALE_CREATED };
+const allSales = [...salesMock.ALL_SALES_MOCK];
+const sales = [...salesMock.SALE_BY_ID_MOCK];
+const productsSold = [...salesMock.PRODUCTS_SOLDS];
+const saleCreated = { ...salesMock.SALE_CREATED };
+const invalidData = [...salesMock.INVALID_SALE_DATA];
 
 describe('TEST CASE SALE CONTROLLER - When search for all sale', () => {
   before(() => {
@@ -106,35 +110,54 @@ describe('TEST CASE SALE CONTROLLER - When search for a specific sale', () => {
 });
 
 describe('TEST CASE SALE CONTROLLER - When add a sale in database', () => {
-  describe('When the sale is created', () => {
+  describe('When the products id receiveid are invalid ', () => {
     before(() => {
       sinon.stub(salesService, 'create').resolves(saleCreated);
+      sinon.stub(productsService, 'getAll').resolves(allProducts);
     });
 
     after(() => {
       salesService.create.restore();
+      productsService.getAll.restore();
+    });
+
+    it('It should throw an error', async () => {
+      return expect(testController(salesController.create, { body: invalidData })).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
+    });
+  });
+  describe('When the sale is created', () => {
+    beforeEach(() => {
+      sinon.stub(salesService, 'create').resolves(saleCreated);
+      sinon.stub(productsService, 'getAll').resolves(allProducts);
+    });
+
+    afterEach(() => {
+      salesService.create.restore();
+      productsService.getAll.restore();
     });
 
     it('It should return code 201', async () => {
-      const response = await testController(salesController.create, { body: { name: 'ProductX' } });
+      const response = await testController(salesController.create, { body: productsSold });
 
       expect(response.status).to.be.equal(201);
     });
 
     it('It should return an object', async () => {
-      const response = await testController(salesController.create, { body: { name: 'ProductX' } });
+      const response = await testController(salesController.create, { body: productsSold });
 
       expect(response.body).to.be.an('object');
     });
 
     it('The object returned must have "id" and "itemsSold keys', async () => {
-      const response = await testController(salesController.create, { body: [...productsSold] });
+      const response = await testController(salesController.create, { body: productsSold });
 
       expect(response.body).to.all.keys('id', 'itemsSold');
     });
 
     it('The itemsSold key must have an array with the products sold', async () => {
-      const response = await testController(salesController.create, { body: [...productsSold] });
+      const response = await testController(salesController.create, { body: productsSold });
       const { itemsSold } = response.body;
 
       expect(itemsSold).to.eql(productsSold);
