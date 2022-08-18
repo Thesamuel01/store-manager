@@ -145,6 +145,11 @@ describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => 
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When a product is updated', () => {
+  const req = {
+    params: { id: 9 },
+    body: productUpdate,
+  };
+
   describe('When product is not found', () => {
     before(() => {
       sinon.stub(productsService, 'update').resolves(null);
@@ -155,7 +160,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When a product is updated', () => {
     });
 
     it('It should throw an error', async () => {
-      return expect(testController(productsController.update, { params: { id: 8 } })).to.eventually
+      return expect(testController(productsController.update, req)).to.eventually
         .rejectedWith('Product not found')
         .and.be.an.instanceOf(Boom);
     });
