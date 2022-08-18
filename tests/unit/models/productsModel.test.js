@@ -103,7 +103,7 @@ describe('TEST CASE PRODUCT MODEL - When a product is insert into database', () 
   });
 });
 
-describe('TEST CASE PRODUCT MODEL - When a product updated', () => {
+describe('TEST CASE PRODUCT MODEL - When a product is updated', () => {
   describe('When product is not found', () => {
     before(() => {
       const executeResult = [{ affectedRows: 0 }, undefined];
@@ -123,7 +123,7 @@ describe('TEST CASE PRODUCT MODEL - When a product updated', () => {
     });
   })
 
-  describe('When product is found', () => {
+  describe('When product is updated', () => {
     before(() => {
       const executeResult = [{ affectedRows: 1 }, undefined];
   

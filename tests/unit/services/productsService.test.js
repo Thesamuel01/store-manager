@@ -109,7 +109,7 @@ describe('TEST CASE PRODUCT SERVICE - When a product is created', () => {
   });
 });
 
-describe('TEST CASE PRODUCT SERVICE - When a product updated', () => {
+describe('TEST CASE PRODUCT SERVICE - When a product is updated', () => {
   describe('When product is not found', () => {
     before(() => {
       sinon.stub(productsModel, 'update').resolves(null);
@@ -127,7 +127,7 @@ describe('TEST CASE PRODUCT SERVICE - When a product updated', () => {
     });
   })
 
-  describe('When product is found', () => {
+  describe('When product is updated', () => {
     const { name } = newValue;
 
     before(() => {

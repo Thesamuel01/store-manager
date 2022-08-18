@@ -15,6 +15,8 @@ const mock = require('../../mocks/products');
 
 const allProducts = [...mock.ALL_PRODUCTS_MOCK];
 const product = { ...mock.PRODUCT_BY_ID_MOCK };
+const productUpdate = { ...mock.PRODUCT_UPDATE };
+const productUpdated = { ...mock.PRODUCT_UPDATED };
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
   before(() => {
@@ -138,6 +140,63 @@ describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => 
 
       expect(result.body.id).to.be.equal(productCreated.id);
       expect(result.body.name).to.be.equal(productCreated.name);
+    });
+  });
+});
+
+describe('TEST CASE PRODUCT CONTROLLER - When a product is updated', () => {
+  describe('When product is not found', () => {
+    before(() => {
+      sinon.stub(productsService, 'update').resolves(null);
+    });
+
+    after(() => {
+      productsService.update.restore();
+    });
+
+    it('It should throw an error', async () => {
+      return expect(testController(productsController.update, { params: { id: 8 } })).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
+    });
+  });
+
+  describe('When product is updated', () => {
+    const req = {
+      params: { id: 1 },
+      body: productUpdate,
+    };
+
+    before(() => {
+      sinon.stub(productsService, 'update').resolves(productUpdated);
+    });
+
+    after(() => {
+      productsService.update.restore();
+    });
+
+    it('It should return code 200', async () => {
+      const result = await testController(productsController.update, req);
+
+      expect(result.status).to.be.equal(200);
+    });
+
+    it('It should return an object', async () => {
+      const result = await testController(productsController.update, req);
+
+      expect(result.body).to.be.an('object');
+    });
+
+    it('The objects returned must has "id" and "name" keys', async () => {
+      const result = await testController(productsController.update, req);
+
+      expect(result.body).to.all.keys('id', 'name');
+    })
+
+    it('The object returned should have infos about the product created', async () => {
+      const result = await testController(productsController.update, req);
+
+      expect(result.body).to.be.eql(productUpdated);
     });
   });
 });
