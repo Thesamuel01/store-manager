@@ -15,4 +15,6 @@ productsRoute.post('/', [
   rescue(productsController.create),
 ]);
 
+productsRoute.put('/:id', rescue(productsController.update));
+
 module.exports = productsRoute;
