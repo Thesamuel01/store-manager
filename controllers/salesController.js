@@ -20,7 +20,11 @@ const getById = async (req, res) => {
 const checkProductsIdExist = async (array) => {
   const products = await productsService.getAll();
 
-  const hasAnInvalidId = array.some(({ productId }) => !products.find(({ id }) => id === productId));
+  const hasAnInvalidId = array.some(({ productId }) => {
+    const hasProduct = products.find(({ id }) => id === productId);
+
+    return !hasProduct;
+  });
 
   return hasAnInvalidId;
 };
