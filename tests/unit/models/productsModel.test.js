@@ -104,25 +104,47 @@ describe('TEST CASE PRODUCT MODEL - When a product is insert into database', () 
 });
 
 describe('TEST CASE PRODUCT MODEL - When a product updated', () => {
-  before(() => {
-    const executeResult = [{ affectedRows: 1, insertId: 4 }, undefined];
+  describe('When product is not found', () => {
+    before(() => {
+      const executeResult = [{ affectedRows: 0 }, undefined];
+  
+      sinon.stub(connection, 'execute').resolves(executeResult);
+    });
+  
+    after(() => {
+      connection.execute.restore();
+    }); 
 
-    sinon.stub(connection, 'execute').resolves(executeResult);
-  });
+    it('It must return null', async () => {
+      const name = 'Armadura do Groot'
+      const result = await productsModel.update(9, name);
+  
+      expect(result).to.be.null;
+    });
+  })
 
-  after(() => {
-    connection.execute.restore();
-  });
-
-  it('It should return an object', async () => {
-    const result = await productsModel.update();
-
-    expect(result).to.be.an('object');
-  });
-
-  it('The object returned must have "id" and "name" keys', async () => {
-    const result = await productsModel.update(1, newValue);
-
-    expect(result).to.all.keys('id', 'name');
-  });
+  describe('When product is found', () => {
+    before(() => {
+      const executeResult = [{ affectedRows: 1 }, undefined];
+  
+      sinon.stub(connection, 'execute').resolves(executeResult);
+    });
+  
+    after(() => {
+      connection.execute.restore();
+    });
+  
+    it('It must return an object', async () => {
+      const result = await productsModel.update();
+  
+      expect(result).to.be.an('object');
+    });
+  
+    it('The object returned must have "id" and "name" keys', async () => {
+      const { name } = newValue;
+      const result = await productsModel.update(1, name);
+  
+      expect(result).to.all.keys('id', 'name');
+    });
+  })
 });
