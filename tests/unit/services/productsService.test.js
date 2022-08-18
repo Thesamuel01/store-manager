@@ -4,10 +4,12 @@ const sinon = require('sinon');
 
 const productsModel = require('../../../models/productsModel');
 const productsService = require('../../../services/productsService');
-const { ALL_PRODUCTS_MOCK, PRODUCT_BY_ID_MOCK } = require('../../mocks/products');
+const mock = require('../../mocks/products');
 
-const allProducts = [...ALL_PRODUCTS_MOCK];
-const product = { ...PRODUCT_BY_ID_MOCK };
+const allProducts = [...mock.ALL_PRODUCTS_MOCK];
+const product = { ...mock.PRODUCT_BY_ID_MOCK };
+const productUpdated = { ...mock.PRODUCT_UPDATED };
+const newValue = { ...mock.PRODUCT_UPDATE };
 
 describe('TEST CASE PRODUCT SERVICE - When search for all products', () => {
   before(() => {
@@ -105,4 +107,48 @@ describe('TEST CASE PRODUCT SERVICE - When a product is created', () => {
     expect(id).to.be.equal(productCreated.id);
     expect(name).to.be.equal(productCreated.name);
   });
+});
+
+describe('TEST CASE PRODUCT SERVICE - When a product updated', () => {
+  describe('When product is not found', () => {
+    before(() => {
+      sinon.stub(productsModel, 'update').resolves(null);
+    });
+
+    after(() => {
+      productsModel.update.restore();
+    });
+
+    it('It must return null', async () => {
+      const name = 'Armadura do Groot'
+      const result = await productsService.update(9, name);
+  
+      expect(result).to.be.null;
+    });
+  })
+
+  describe('When product is found', () => {
+    const { name } = newValue;
+
+    before(() => {
+      sinon.stub(productsModel, 'update').resolves(productUpdated);
+    });
+  
+    after(() => {
+      productsModel.update.restore();
+    });
+  
+    it('It must return an object', async () => {
+      const result = await productsService.update(1, name);
+  
+      expect(result).to.be.an('object');
+    });
+  
+    it('The object returned must have "id" and "name" keys', async () => {
+      const { name } = newValue;
+      const result = await productsService.update(1, name);
+  
+      expect(result).to.all.keys('id', 'name');
+    });
+  })
 });

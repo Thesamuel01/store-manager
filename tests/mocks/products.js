@@ -16,10 +16,16 @@ const PRODUCT_BY_ID_MOCK = {
 
 const PRODUCT_UPDATE = {
   name: 'Martelo do Batman',
+};
+
+const PRODUCT_UPDATED = {
+  id: 1,
+  name: 'Martelo do Batman',
 }
 
 module.exports = {
   ALL_PRODUCTS_MOCK,
   PRODUCT_BY_ID_MOCK,
   PRODUCT_UPDATE,
+  PRODUCT_UPDATED,
 }
