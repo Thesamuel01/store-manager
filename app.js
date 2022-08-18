@@ -13,6 +13,7 @@ app.get('/', (_request, response) => {
 });
 
 app.use('/products', routes.productsRoute);
+app.use('/sales', routes.salesRoute);
 
 app.use(middlewares.errorMiddleware);
 

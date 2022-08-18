@@ -62,7 +62,7 @@ describe('TEST CASE SALE CONTROLLER - When search for all sale', () => {
 describe('TEST CASE SALE CONTROLLER - When search for a specific sale', () => {
   describe('When the product is not found', () => {
     before(() => {
-      sinon.stub(salesService, 'getById').resolves();
+      sinon.stub(salesService, 'getById').resolves([]);
     });
 
     after(() => {
@@ -71,7 +71,7 @@ describe('TEST CASE SALE CONTROLLER - When search for a specific sale', () => {
 
     it('It should throw an error', async () => {
       return expect(testController(salesController.getById, { params: { id: 8 } })).to.eventually
-        .rejectedWith('Salle not found')
+        .rejectedWith('Sale not found')
         .and.be.an.instanceOf(Boom);
     });
   });
@@ -127,15 +127,15 @@ describe('TEST CASE SALE CONTROLLER - When add a sale in database', () => {
       expect(response.body).to.be.an('object');
     });
 
-    it('The object returned must have "saleId", "date", "productId and "quantity" keys', async () => {
+    it('The object returned must have "id" and "itemsSold keys', async () => {
       const response = await testController(salesController.create, { body: [...productsSold] });
 
-      expect(response.body[0]).to.all.keys('saleId', 'date', 'productId', 'quantity');
+      expect(response.body).to.all.keys('id', 'itemsSold');
     });
 
     it('The itemsSold key must have an array with the products sold', async () => {
       const response = await testController(salesController.create, { body: [...productsSold] });
-      const { itemsSold } = response.body[0]
+      const { itemsSold } = response.body;
 
       expect(itemsSold).to.eql(productsSold);
     });
