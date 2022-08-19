@@ -18,8 +18,16 @@ const create = async (itemsSold) => {
   return productCreated;
 };
 
+const deleteSale = async (id) => {
+  const isDeleted = await salesModel.deleteSale(id);
+
+  return isDeleted;
+};
+
+
 module.exports = {
   getAll,
   getById,
   create,
+  deleteSale,
 };
