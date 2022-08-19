@@ -164,3 +164,45 @@ describe('TEST CASE SALE CONTROLLER - When add a sale in database', () => {
     });
   });
 });
+
+describe('TEST CASE SALE CONTROLLER - When a product is deleted', () => {
+  describe('When product is not found', () => {
+    const req = {
+      params: { id: 9 },
+    };
+
+    before(() => {
+      sinon.stub(salesService, 'deleteSale').resolves(false);
+    });
+
+    after(() => {
+      salesService.deleteSale.restore();
+    });
+
+    it('It should throw an error', async () => {
+      return expect(testController(salesController.deleteSale, req)).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
+    });
+  });
+
+  describe('When product is deleted', () => {
+    const req = {
+      params: { id: 1 },
+    };
+    
+    before(() => {
+      sinon.stub(salesService, 'deleteSale').resolves(true);
+    });
+  
+    after(() => {
+      salesService.deleteSale.restore();
+    }); 
+  
+    it('It must return code 204', async () => {
+      const result = await testController(salesController.deleteSale, req);
+
+      expect(result.status).to.be.equal(204);
+    });
+  })
+});
