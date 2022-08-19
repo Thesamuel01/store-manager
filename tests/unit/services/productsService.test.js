@@ -152,3 +152,37 @@ describe('TEST CASE PRODUCT SERVICE - When a product is updated', () => {
     });
   })
 });
+
+describe('TEST CASE PRODUCT SERVICE - When a product is deleted', () => {
+  describe('When product is not found', () => {
+    before(() => {
+      sinon.stub(productsModel, 'deleteProduct').resolves(false);
+    });
+  
+    after(() => {
+      productsModel.deleteProduct.restore();
+    }); 
+
+    it('It must return false', async () => {
+      const result = await productsService.deleteProduct(9);
+  
+      expect(result).to.be.false;
+    });
+  })
+
+  describe('When product is deleted', () => {
+    before(() => {
+      sinon.stub(productsModel, 'deleteProduct').resolves(true);
+    });
+  
+    after(() => {
+      productsModel.deleteProduct.restore();
+    }); 
+  
+    it('It must return true', async () => {
+      const result = await productsService.deleteProduct();
+  
+      expect(result).to.be.true;
+    });
+  })
+});
