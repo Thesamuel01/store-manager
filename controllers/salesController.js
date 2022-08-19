@@ -44,7 +44,7 @@ const deleteSale = async (req, res) => {
   const { id } = req.params;
   const isDeleted = await salesService.deleteSale(id);
 
-  if (!isDeleted) throw boom.notFound('Product not found');
+  if (!isDeleted) throw boom.notFound('Sale not found');
 
   return res.status(204).send();
 };
