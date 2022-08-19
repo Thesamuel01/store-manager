@@ -145,12 +145,12 @@ describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => 
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When a product is updated', () => {
-  const req = {
-    params: { id: 9 },
-    body: productUpdate,
-  };
-
   describe('When product is not found', () => {
+    const req = {
+      params: { id: 9 },
+      body: productUpdate,
+    };
+
     before(() => {
       sinon.stub(productsService, 'update').resolves(null);
     });
@@ -204,4 +204,46 @@ describe('TEST CASE PRODUCT CONTROLLER - When a product is updated', () => {
       expect(result.body).to.be.eql(productUpdated);
     });
   });
+});
+
+describe('TEST CASE PRODUCT CONTROLLER - When a product is deleted', () => {
+  describe('When product is not found', () => {
+    const req = {
+      params: { id: 9 },
+    };
+
+    before(() => {
+      sinon.stub(productsService, 'deleteProduct').resolves(false);
+    });
+
+    after(() => {
+      productsService.deleteProduct.restore();
+    });
+
+    it('It should throw an error', async () => {
+      return expect(testController(productsController.deleteProduct, req)).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
+    });
+  });
+
+  describe('When product is deleted', () => {
+    const req = {
+      params: { id: 1 },
+    };
+    
+    before(() => {
+      sinon.stub(productsService, 'deleteProduct').resolves(true);
+    });
+  
+    after(() => {
+      productsService.deleteProduct.restore();
+    }); 
+  
+    it('It must return code 204', async () => {
+      const result = await testController(productsController.deleteProduct, req);
+
+      expect(result.status).to.be.equal(200);
+    });
+  })
 });
