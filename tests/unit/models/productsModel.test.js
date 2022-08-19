@@ -162,7 +162,7 @@ describe('TEST CASE PRODUCT MODEL - When a product is deleted', () => {
     }); 
 
     it('It must return false', async () => {
-      const result = await productsModel.update(9);
+      const result = await productsModel.deleteProduct(9);
   
       expect(result).to.be.false;
     });
@@ -180,7 +180,7 @@ describe('TEST CASE PRODUCT MODEL - When a product is deleted', () => {
     });
   
     it('It must return true', async () => {
-      const result = await productsModel.delete();
+      const result = await productsModel.deleteProduct(1);
   
       expect(result).to.be.true;
     });
