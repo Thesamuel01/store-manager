@@ -181,7 +181,7 @@ describe('TEST CASE SALE CONTROLLER - When a product is deleted', () => {
 
     it('It should throw an error', async () => {
       return expect(testController(salesController.deleteSale, req)).to.eventually
-        .rejectedWith('Product not found')
+        .rejectedWith('Sale not found')
         .and.be.an.instanceOf(Boom);
     });
   });
