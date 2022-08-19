@@ -111,3 +111,37 @@ describe('TEST CASE SALE SERVICE - When a sale is insert into database', () => {
     expect(itemsSold).to.eql(productsSold);
   });
 });
+
+describe('TEST CASE SALE SERVICE - When a product is deleted', () => {
+  describe('When product is not found', () => {
+    before(() => {
+      sinon.stub(salesModel, 'deleteSale').resolves(false);
+    });
+  
+    after(() => {
+      salesModel.deleteSale.restore();
+    }); 
+
+    it('It must return false', async () => {
+      const result = await salesService.deleteSale(9);
+  
+      expect(result).to.be.false;
+    });
+  })
+
+  describe('When product is deleted', () => {
+    before(() => {
+      sinon.stub(salesModel, 'deleteSale').resolves(true);
+    });
+  
+    after(() => {
+      salesModel.deleteSale.restore();
+    }); 
+  
+    it('It must return true', async () => {
+      const result = await salesService.deleteSale(1);
+  
+      expect(result).to.be.true;
+    });
+  })
+});
