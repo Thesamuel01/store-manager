@@ -40,7 +40,7 @@ const deleteProduct = async (req, res) => {
 
   if (!isDeleted) throw boom.notFound('Product not found');
 
-  return res.status(204);
+  return res.status(204).send();
 };
 
 module.exports = {
