@@ -243,7 +243,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When a product is deleted', () => {
     it('It must return code 204', async () => {
       const result = await testController(productsController.deleteProduct, req);
 
-      expect(result.status).to.be.equal(200);
+      expect(result.status).to.be.equal(204);
     });
   })
 });
