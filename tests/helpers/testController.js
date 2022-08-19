@@ -17,10 +17,11 @@ const testController = async (controller, request = BASIC_REQ) => {
       result.body = obj
       return null
     },
-    status: (num)=> {
+    status: (num) => {
       result.status = num;
       return response
-    }
+    },
+    send: () => {},
   }
 
   const spyJson = sinon.spy(response, 'json');
