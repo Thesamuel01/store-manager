@@ -10,6 +10,8 @@ const allSales = [...mock.ALL_SALES_MOCK];
 const sales = [...mock.SALE_BY_ID_MOCK];
 const productsSold = [...mock.PRODUCTS_SOLDS];
 const saleCreated = { ...mock.SALE_CREATED };
+const itemsUpdate = [...mock.SALE_UPDATE];
+const saleUpdated = { ...mock.SALE_UPDATED };
 
 describe('TEST CASE SALE SERVICE - When search for all sales on database', () => {
   before(() => {
@@ -112,7 +114,7 @@ describe('TEST CASE SALE SERVICE - When a sale is insert into database', () => {
   });
 });
 
-describe('TEST CASE SALE SERVICE - When a product is deleted', () => {
+describe('TEST CASE SALE SERVICE - When a sale is deleted', () => {
   describe('When product is not found', () => {
     before(() => {
       sinon.stub(salesModel, 'deleteSale').resolves(false);
@@ -129,7 +131,7 @@ describe('TEST CASE SALE SERVICE - When a product is deleted', () => {
     });
   })
 
-  describe('When product is deleted', () => {
+  describe('When sale is deleted', () => {
     before(() => {
       sinon.stub(salesModel, 'deleteSale').resolves(true);
     });
@@ -142,6 +144,52 @@ describe('TEST CASE SALE SERVICE - When a product is deleted', () => {
       const result = await salesService.deleteSale(1);
   
       expect(result).to.be.true;
+    });
+  })
+});
+
+describe('TEST CASE SALE SERVICE - When a sale is updated', () => {
+  describe('When sale is not found', () => {
+    before(() => {
+      sinon.stub(salesModel, 'update').resolves(null);
+    });
+  
+    after(() => {
+      salesModel.update.restore();
+    }); 
+
+    it('It must throw an error', async () => {
+      expect(salesService.update(1, itemsUpdate)).to.eventually
+        .rejectedWith('Sale not found')
+        .and.be.an.instanceOf(Boom);
+    });
+  })
+
+  describe('When sale is updated', () => {
+    beforeEach(() => {
+      sinon.stub(salesModel, 'update').resolves(saleUpdated);
+    });
+  
+    afterEach(() => {
+      salesModel.update.restore();
+    });
+  
+    it('It must return an object', async () => {
+      const result = await salesService.update(1, itemsUpdate);
+  
+      expect(result).to.be.an('object');
+    });
+  
+    it('The object returned must have "saleId" and "itemsUpdated" keys', async () => {
+      const result = await salesService.update(1, itemsUpdate);
+
+      expect(result).to.all.keys('saleId', 'itemsUpdated');
+    });
+
+    it('The itemsUpdated key must have an array with the products updated', async () => {
+      const { itemsUpdated } = await salesService.update(1, itemsUpdate);
+
+      expect(itemsUpdated).to.eql(itemsUpdate);
     });
   })
 });

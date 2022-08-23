@@ -72,6 +72,11 @@ const SALE_UPDATE = [
   }
 ];
 
+const SALE_UPDATED = {
+  saleId: 1,
+  itemsUpdated: [...SALE_UPDATE],
+};
+
 module.exports = {
   ALL_SALES_MOCK,
   SALE_BY_ID_MOCK,
@@ -79,4 +84,5 @@ module.exports = {
   SALE_CREATED,
   INVALID_SALE_DATA,
   SALE_UPDATE,
+  SALE_UPDATED,
 };
