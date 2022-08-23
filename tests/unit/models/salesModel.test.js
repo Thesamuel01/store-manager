@@ -9,6 +9,7 @@ const salesModel = require('../../../models/salesModel');
 const allSales = [...mock.ALL_SALES_MOCK];
 const sale = [...mock.SALE_BY_ID_MOCK];
 const productsSold = [...mock.PRODUCTS_SOLDS];
+const itemsUpdate = [...mock.SALE_UPDATE];
 
 describe('TEST CASE SALE MODEL - When search for all sales on database', () => {
   before(() => {
@@ -120,7 +121,7 @@ describe('TEST CASE SALE MODEL - When a product is insert into database', () => 
 });
 
 describe('TEST CASE SALE MODEL - When a product is deleted', () => {
-  describe('When product is not found', () => {
+  describe('When sale is not found', () => {
     before(() => {
       const executeResult = [{ affectedRows: 0 }, undefined];
   
@@ -138,7 +139,7 @@ describe('TEST CASE SALE MODEL - When a product is deleted', () => {
     });
   })
 
-  describe('When product is deleted', () => {
+  describe('When sale is deleted', () => {
     before(() => {
       const executeResult = [{ affectedRows: 1 }, undefined];
   
@@ -153,6 +154,61 @@ describe('TEST CASE SALE MODEL - When a product is deleted', () => {
       const result = await salesModel.deleteSale(1);
   
       expect(result).to.be.true;
+    });
+  })
+});
+
+describe('TEST CASE SALE MODEL - When a sale is updated', () => {
+  describe('When the sale is not found', () => {
+    before(() => {
+      sinon.stub(connection, 'execute').resolves([[], undefined]);
+    });
+  
+    after(() => {
+      connection.execute.restore();
+    }); 
+
+    it('It must return null', async () => {
+      const result = await salesModel.update(9, itemsUpdate);
+  
+      expect(result).to.be.null;
+    });
+  })
+
+  describe('When the sale is updated', () => {
+    beforeEach(() => {
+      const firstCall = [[
+        { productId: 1, quantity: 5, date: '2022-08-23T00:39:16.000Z' },
+        { productId: 2, quantity: 10, date: '2022-08-23T00:39:16.000Z' }
+      ], undefined];
+      const nthCall = [{ affectedRows: 2 }, undefined]
+
+      const funcStub = sinon.stub(connection, 'execute');
+
+      funcStub.onFirstCall().resolves(firstCall);
+      funcStub.resolves(nthCall);
+    });
+  
+    afterEach(() => {
+      connection.execute.restore();
+    });
+  
+    it('It must return an object', async () => {
+      const result = await salesModel.update(1, itemsUpdate);
+  
+      expect(result).to.be.an('object');
+    });
+  
+    it('The object returned must have "saleId" and "itemsUpdated" keys', async () => {
+      const result = await salesModel.update(1, itemsUpdate);
+
+      expect(result).to.all.keys('saleId', 'itemsUpdated');
+    });
+
+    it('The itemsUpdated key must have an array with the products updated', async () => {
+      const { itemsUpdated } = await salesModel.update(1, itemsUpdate);
+
+      expect(itemsUpdated).to.eql(itemsUpdate);
     });
   })
 });

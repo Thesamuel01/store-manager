@@ -61,10 +61,22 @@ const INVALID_SALE_DATA = [
   }
 ];
 
+const SALE_UPDATE = [
+  {
+    productId: 1,
+    quantity: 10
+  },
+  {
+    productId: 2,
+    quantity: 50
+  }
+];
+
 module.exports = {
   ALL_SALES_MOCK,
   SALE_BY_ID_MOCK,
   PRODUCTS_SOLDS,
   SALE_CREATED,
   INVALID_SALE_DATA,
+  SALE_UPDATE,
 };
