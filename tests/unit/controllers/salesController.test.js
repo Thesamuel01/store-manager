@@ -21,6 +21,8 @@ const sales = [...salesMock.SALE_BY_ID_MOCK];
 const productsSold = [...salesMock.PRODUCTS_SOLDS];
 const saleCreated = { ...salesMock.SALE_CREATED };
 const invalidData = [...salesMock.INVALID_SALE_DATA];
+const itemsUpdate = [...salesMock.SALE_UPDATE];
+const saleUpdated = { ...salesMock.SALE_UPDATED };
 
 describe('TEST CASE SALE CONTROLLER - When search for all sale', () => {
   before(() => {
@@ -203,6 +205,48 @@ describe('TEST CASE SALE CONTROLLER - When a product is deleted', () => {
       const result = await testController(salesController.deleteSale, req);
 
       expect(result.status).to.be.equal(204);
+    });
+  })
+});
+
+describe('TEST CASE SALE CONTROLLER - When a sale is updated', () => {
+  describe('When product is updated', () => {
+    const req = {
+      params: { id: 1 },
+      body: itemsUpdate,
+    };
+    
+    before(() => {
+      sinon.stub(salesService, 'update').resolves(true);
+    });
+  
+    after(() => {
+      salesService.update.restore();
+    }); 
+  
+    it('It should return code 200', async () => {
+      const response = await testController(salesController.update, req);
+
+      expect(response.status).to.be.equal(200);
+    });
+
+    it('It should return an object', async () => {
+      const response = await testController(salesController.update, req);
+
+      expect(response.body).to.be.an('object');
+    });
+
+    it('The object returned must have "id" and "itemsUpdated" keys', async () => {
+      const response = await testController(salesController.update, req);
+
+      expect(response.body).to.all.keys('id', 'itemsUpdated');
+    });
+
+    it('The itemsUpdated key must have an array with the products updated', async () => {
+      const response = await testController(salesController.update, req);
+      const { itemsUpdated } = response.body;
+
+      expect(itemsUpdated).to.eql(itemsUpdate);
     });
   })
 });
