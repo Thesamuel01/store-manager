@@ -52,6 +52,7 @@ const deleteSale = async (req, res) => {
 const update = async (req, res) => {
   const { id } = req.params;
   const itemsUpdate = req.body;
+
   const saleUpdated = await salesService.update(id, itemsUpdate);
 
   return res.status(200).json(saleUpdated);

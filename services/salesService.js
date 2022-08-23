@@ -1,6 +1,25 @@
 const boom = require('@hapi/boom');
 
 const salesModel = require('../models/salesModel');
+const productsService = require('../services/productsService');
+
+const checkProductsIdExist = async (array) => {
+  const products = await productsService.getAll();
+
+  const hasAnInvalidId = array.some(({ productId }) => {
+    const hasProduct = products.find(({ id }) => id === productId);
+
+    return !hasProduct;
+  });
+
+  return hasAnInvalidId;
+};
+
+const checkSaleIdExist = async (id) => {
+  const hasSale = await salesModel.getById(id);
+
+  return hasSale.length === 0; 
+};
 
 const getAll = async () => {
   const products = await salesModel.getAll();
@@ -27,9 +46,13 @@ const deleteSale = async (id) => {
 };
 
 const update = async (id, itemsUpdate) => {
-  const saleUpdated = await salesModel.update(id, itemsUpdate);
+  const hasAnInvalidProductId = await checkProductsIdExist(itemsUpdate);
+  const hasAnInvalidSaleId = await checkSaleIdExist(id);
 
-  if (!saleUpdated) throw boom.notFound('Sale not found');
+  if (hasAnInvalidProductId) throw boom.notFound('Product not found');
+  if (hasAnInvalidSaleId) throw boom.notFound('Sale not found');
+
+  const saleUpdated = await salesModel.update(id, itemsUpdate);
 
   return saleUpdated;
 };

@@ -17,4 +17,9 @@ salesRoute.post('/', [
 
 salesRoute.delete('/:id', rescue(salesController.deleteSale));
 
+salesRoute.put('/:id', [
+  rescue(middlewares.salesValidation),
+  rescue(salesController.update),
+]);
+
 module.exports = salesRoute;
