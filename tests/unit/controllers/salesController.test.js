@@ -216,11 +216,11 @@ describe('TEST CASE SALE CONTROLLER - When a sale is updated', () => {
       body: itemsUpdate,
     };
     
-    before(() => {
-      sinon.stub(salesService, 'update').resolves(true);
+    beforeEach(() => {
+      sinon.stub(salesService, 'update').resolves(saleUpdated);
     });
   
-    after(() => {
+    afterEach(() => {
       salesService.update.restore();
     }); 
   
@@ -236,10 +236,10 @@ describe('TEST CASE SALE CONTROLLER - When a sale is updated', () => {
       expect(response.body).to.be.an('object');
     });
 
-    it('The object returned must have "id" and "itemsUpdated" keys', async () => {
+    it('The object returned must have "saleId" and "itemsUpdated" keys', async () => {
       const response = await testController(salesController.update, req);
 
-      expect(response.body).to.all.keys('id', 'itemsUpdated');
+      expect(response.body).to.all.keys('saleId', 'itemsUpdated');
     });
 
     it('The itemsUpdated key must have an array with the products updated', async () => {
