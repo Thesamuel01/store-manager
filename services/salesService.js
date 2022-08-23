@@ -15,12 +15,6 @@ const checkProductsIdExist = async (array) => {
   return hasAnInvalidId;
 };
 
-const checkSaleIdExist = async (id) => {
-  const hasSale = await salesModel.getById(id);
-
-  return hasSale.length === 0; 
-};
-
 const getAll = async () => {
   const products = await salesModel.getAll();
 
@@ -28,29 +22,36 @@ const getAll = async () => {
 };
 
 const getById = async (id) => {
-  const product = await salesModel.getById(id);
+  const sale = await salesModel.getById(id);
 
-  return product;
+  if (sale.length === 0) throw boom.notFound('Sale not found');
+
+  return sale;
 };
 
 const create = async (itemsSold) => {
-  const productCreated = await salesModel.create(itemsSold);
+  const hasAnInvalidId = await checkProductsIdExist(itemsSold);
 
-  return productCreated;
+  if (hasAnInvalidId) throw boom.notFound('Product not found');
+
+  const saleCreated = await salesModel.create(itemsSold);
+
+  return saleCreated;
 };
 
-const deleteSale = async (id) => {
+const deleteSale = async (id) => {  
   const isDeleted = await salesModel.deleteSale(id);
+  
+  if (!isDeleted) throw boom.notFound('Sale not found');
 
   return isDeleted;
 };
 
 const update = async (id, itemsUpdate) => {
-  const hasAnInvalidProductId = await checkProductsIdExist(itemsUpdate);
-  const hasAnInvalidSaleId = await checkSaleIdExist(id);
+  await getById(id);
 
+  const hasAnInvalidProductId = await checkProductsIdExist(itemsUpdate);
   if (hasAnInvalidProductId) throw boom.notFound('Product not found');
-  if (hasAnInvalidSaleId) throw boom.notFound('Sale not found');
 
   const saleUpdated = await salesModel.update(id, itemsUpdate);
 
