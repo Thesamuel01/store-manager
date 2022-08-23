@@ -1,3 +1,5 @@
+const boom = require('@hapi/boom');
+
 const salesModel = require('../models/salesModel');
 
 const getAll = async () => {
@@ -24,9 +26,18 @@ const deleteSale = async (id) => {
   return isDeleted;
 };
 
+const update = async (id, itemsUpdate) => {
+  const saleUpdated = await salesModel.update(id, itemsUpdate);
+
+  if (!saleUpdated) throw boom.notFound('Sale not found');
+
+  return saleUpdated;
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   deleteSale,
+  update,
 };

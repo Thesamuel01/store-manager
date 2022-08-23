@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const { describe, beforeEach } = require('mocha');
 const sinon = require('sinon');
+const { Boom } = require('@hapi/boom');
 
 const salesModel = require('../../../models/salesModel');
 const salesService = require('../../../services/salesService');
