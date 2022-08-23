@@ -1,7 +1,7 @@
 const boom = require('@hapi/boom');
 
 const salesModel = require('../models/salesModel');
-const productsService = require('../services/productsService');
+const productsService = require('./productsService');
 
 const checkProductsIdExist = async (array) => {
   const products = await productsService.getAll();
