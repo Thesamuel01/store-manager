@@ -1,12 +1,6 @@
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised');
+const { expect } = require('chai');
 const { describe } = require('mocha');
 const sinon = require('sinon');
-const { Boom } = require('@hapi/boom');
-
-// Codigo retirado da documentacao para usar o chai com promises
-const expect = chai.expect
-chai.use(chaiAsPromised);
 
 const productsService = require('../../../services/productsService');
 const productsController = require('../../../controllers/productsController');
@@ -60,49 +54,31 @@ describe('TEST CASE PRODUCT CONTROLLER - When search for all products', () => {
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When search for a specific product', () => {
-  describe('When the product is not found', () => {
-    before(() => {
-      sinon.stub(productsService, 'getById').resolves();
-    });
-
-    after(() => {
-      productsService.getById.restore();
-    });
-
-    it('It should throw an error', async () => {
-      return expect(testController(productsController.getById, { params: { id: 8 } })).to.eventually
-        .rejectedWith('Product not found')
-        .and.be.an.instanceOf(Boom);
-    });
+  before(() => {
+    sinon.stub(productsService, 'getById').resolves(product);
   });
 
-  describe('When the product is found', () => {
-    before(() => {
-      sinon.stub(productsService, 'getById').resolves(product);
-    });
-
-    after(() => {
-      productsService.getById.restore();
-    });
-
-    it('It should return code 200', async () => {
-      const result = await testController(productsController.getById, { params: { id: 1 } });
-
-      expect(result.status).to.be.equal(200);
-    });
-
-    it('It should return an object', async () => {
-      const result = await testController(productsController.getById, { params: { id: 1 } });
-
-      expect(result.body).to.be.an('object');
-    });
-
-    it('The objects returned must has "id" and "name" keys', async () => {
-      const result = await testController(productsController.getById, { params: { id: 1 } });
-
-      expect(result.body).to.all.keys('id', 'name');
-    })
+  after(() => {
+    productsService.getById.restore();
   });
+
+  it('It should return code 200', async () => {
+    const result = await testController(productsController.getById, { params: { id: 1 } });
+
+    expect(result.status).to.be.equal(200);
+  });
+
+  it('It should return an object', async () => {
+    const result = await testController(productsController.getById, { params: { id: 1 } });
+
+    expect(result.body).to.be.an('object');
+  });
+
+  it('The objects returned must has "id" and "name" keys', async () => {
+    const result = await testController(productsController.getById, { params: { id: 1 } });
+
+    expect(result.body).to.all.keys('id', 'name');
+  })
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => {
@@ -145,105 +121,60 @@ describe('TEST CASE PRODUCT CONTROLLER - When add a product in database', () => 
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When a product is updated', () => {
-  describe('When product is not found', () => {
-    const req = {
-      params: { id: 9 },
-      body: productUpdate,
-    };
+  const req = {
+    params: { id: 1 },
+    body: productUpdate,
+  };
 
-    before(() => {
-      sinon.stub(productsService, 'update').resolves(null);
-    });
-
-    after(() => {
-      productsService.update.restore();
-    });
-
-    it('It should throw an error', async () => {
-      return expect(testController(productsController.update, req)).to.eventually
-        .rejectedWith('Product not found')
-        .and.be.an.instanceOf(Boom);
-    });
+  before(() => {
+    sinon.stub(productsService, 'update').resolves(productUpdated);
   });
 
-  describe('When product is updated', () => {
-    const req = {
-      params: { id: 1 },
-      body: productUpdate,
-    };
+  after(() => {
+    productsService.update.restore();
+  });
 
-    before(() => {
-      sinon.stub(productsService, 'update').resolves(productUpdated);
-    });
+  it('It should return code 200', async () => {
+    const result = await testController(productsController.update, req);
 
-    after(() => {
-      productsService.update.restore();
-    });
+    expect(result.status).to.be.equal(200);
+  });
 
-    it('It should return code 200', async () => {
-      const result = await testController(productsController.update, req);
+  it('It should return an object', async () => {
+    const result = await testController(productsController.update, req);
 
-      expect(result.status).to.be.equal(200);
-    });
+    expect(result.body).to.be.an('object');
+  });
 
-    it('It should return an object', async () => {
-      const result = await testController(productsController.update, req);
+  it('The objects returned must has "id" and "name" keys', async () => {
+    const result = await testController(productsController.update, req);
 
-      expect(result.body).to.be.an('object');
-    });
+    expect(result.body).to.all.keys('id', 'name');
+  })
 
-    it('The objects returned must has "id" and "name" keys', async () => {
-      const result = await testController(productsController.update, req);
+  it('The object returned should have infos about the product created', async () => {
+    const result = await testController(productsController.update, req);
 
-      expect(result.body).to.all.keys('id', 'name');
-    })
-
-    it('The object returned should have infos about the product created', async () => {
-      const result = await testController(productsController.update, req);
-
-      expect(result.body).to.be.eql(productUpdated);
-    });
+    expect(result.body).to.be.eql(productUpdated);
   });
 });
 
 describe('TEST CASE PRODUCT CONTROLLER - When a product is deleted', () => {
-  describe('When product is not found', () => {
-    const req = {
-      params: { id: 9 },
-    };
-
-    before(() => {
-      sinon.stub(productsService, 'deleteProduct').resolves(false);
-    });
-
-    after(() => {
-      productsService.deleteProduct.restore();
-    });
-
-    it('It should throw an error', async () => {
-      return expect(testController(productsController.deleteProduct, req)).to.eventually
-        .rejectedWith('Product not found')
-        .and.be.an.instanceOf(Boom);
-    });
+  const req = {
+    params: { id: 1 },
+  };
+  
+  before(() => {
+    sinon.stub(productsService, 'deleteProduct').resolves(true);
   });
 
-  describe('When product is deleted', () => {
-    const req = {
-      params: { id: 1 },
-    };
-    
-    before(() => {
-      sinon.stub(productsService, 'deleteProduct').resolves(true);
-    });
-  
-    after(() => {
-      productsService.deleteProduct.restore();
-    }); 
-  
-    it('It must return code 204', async () => {
-      const result = await testController(productsController.deleteProduct, req);
+  after(() => {
+    productsService.deleteProduct.restore();
+  }); 
 
-      expect(result.status).to.be.equal(204);
-    });
-  })
+  it('It must return code 204', async () => {
+    const result = await testController(productsController.deleteProduct, req);
+
+    expect(result.status).to.be.equal(204);
+  });
 });

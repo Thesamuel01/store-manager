@@ -1,3 +1,5 @@
+const boom = require('@hapi/boom');
+
 const productsModel = require('../models/productsModel');
 
 const getAll = async () => {
@@ -8,6 +10,8 @@ const getAll = async () => {
 
 const getById = async (id) => {
   const product = await productsModel.getById(id);
+
+  if (!product) throw boom.notFound('Product not found');
 
   return product;
 };
@@ -21,11 +25,15 @@ const create = async (name) => {
 const update = async (id, name) => {
   const productUpdated = await productsModel.update(id, name);
 
+  if (!productUpdated) throw boom.notFound('Product not found');
+
   return productUpdated;
 };
 
 const deleteProduct = async (id) => {
   const isDeleted = await productsModel.deleteProduct(id);
+
+  if (!isDeleted) throw boom.notFound('Product not found');
 
   return isDeleted;
 };

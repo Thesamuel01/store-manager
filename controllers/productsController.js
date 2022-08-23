@@ -1,4 +1,3 @@
-const boom = require('@hapi/boom');
 const productService = require('../services/productsService');
 
 const getAll = async (_req, res) => {
@@ -9,11 +8,9 @@ const getAll = async (_req, res) => {
 
 const getById = async (req, res) => {
   const { id } = req.params;
-  const products = await productService.getById(id);
+  const product = await productService.getById(id);
 
-  if (!products) throw boom.notFound('Product not found');
-
-  return res.status(200).json(products);
+  return res.status(200).json(product);
 };
 
 const create = async (req, res) => {
@@ -29,16 +26,13 @@ const update = async (req, res) => {
   const { name } = req.body;
   const productUpdated = await productService.update(id, name);
 
-  if (!productUpdated) throw boom.notFound('Product not found');
-
   return res.status(200).json(productUpdated);
 };
 
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
-  const isDeleted = await productService.deleteProduct(id);
-
-  if (!isDeleted) throw boom.notFound('Product not found');
+  
+  await productService.deleteProduct(id);
 
   return res.status(204).send();
 };

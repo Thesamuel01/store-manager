@@ -1,6 +1,12 @@
-const { expect } = require('chai');
+const chai = require('chai')
+const chaiAsPromised = require('chai-as-promised');
 const { describe } = require('mocha');
 const sinon = require('sinon');
+const { Boom } = require('@hapi/boom');
+
+// Codigo retirado da documentacao para usar o chai com promises
+const expect = chai.expect
+chai.use(chaiAsPromised);
 
 const productsModel = require('../../../models/productsModel');
 const productsService = require('../../../services/productsService');
@@ -10,6 +16,7 @@ const allProducts = [...mock.ALL_PRODUCTS_MOCK];
 const product = { ...mock.PRODUCT_BY_ID_MOCK };
 const productUpdated = { ...mock.PRODUCT_UPDATED };
 const newValue = { ...mock.PRODUCT_UPDATE };
+const INVALID_ID = 9;
 
 describe('TEST CASE PRODUCT SERVICE - When search for all products', () => {
   before(() => {
@@ -48,34 +55,52 @@ describe('TEST CASE PRODUCT SERVICE - When search for all products', () => {
 });
 
 describe('TEST CASE PRODUCT SERVICE - When search for a specific product', () => {
-  const ID = 1;
+  describe('When the product is not found', () => {
+    before(() => {
+      sinon.stub(productsModel, 'getById').resolves();
+    });
 
-  before(() => {
-    sinon.stub(productsModel, 'getById').resolves(product);
+    after(() => {
+      productsModel.getById.restore();
+    });
+
+    it('It should throw an error', async () => {
+      return expect(productsService.getById(INVALID_ID)).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
+    });
   });
 
-  after(() => {
-    productsModel.getById.restore();
+  describe('When the product is found', () => {
+    const ID = 1;
+  
+    before(() => {
+      sinon.stub(productsModel, 'getById').resolves(product);
+    });
+  
+    after(() => {
+      productsModel.getById.restore();
+    });
+  
+    it('It should return an object', async () => {
+      const result = await productsService.getById(ID);
+  
+      expect(result).to.be.an('object');
+    });
+  
+    it('The object returned must have "id" and "name" keys', async () => {
+      const result = await productsService.getById(ID);
+  
+      expect(result).to.all.keys('id', 'name');
+    });
+  
+    it('The product id must be equal to id pass by parameter', async () => {
+      const result = await productsService.getById(ID);
+      const { id } = result;
+  
+      expect(id).to.be.equal(ID);
+    })
   });
-
-  it('It should return an object', async () => {
-    const result = await productsService.getById(ID);
-
-    expect(result).to.be.an('object');
-  });
-
-  it('The object returned must have "id" and "name" keys', async () => {
-    const result = await productsService.getById(ID);
-
-    expect(result).to.all.keys('id', 'name');
-  });
-
-  it('The product id must be equal to id pass by parameter', async () => {
-    const result = await productsService.getById(ID);
-    const { id } = result;
-
-    expect(id).to.be.equal(ID);
-  })
 });
 
 describe('TEST CASE PRODUCT SERVICE - When a product is created', () => {
@@ -119,13 +144,14 @@ describe('TEST CASE PRODUCT SERVICE - When a product is updated', () => {
       productsModel.update.restore();
     });
 
-    it('It must return null', async () => {
-      const name = 'Armadura do Groot'
-      const result = await productsService.update(9, name);
-  
-      expect(result).to.be.null;
+    it('It should throw an error', async () => {
+      const PRODUCT_NAME = 'Martelo do Chapolin';
+
+      return expect(productsService.update(INVALID_ID, PRODUCT_NAME)).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
     });
-  })
+  });
 
   describe('When product is updated', () => {
     const { name } = newValue;
@@ -158,17 +184,17 @@ describe('TEST CASE PRODUCT SERVICE - When a product is deleted', () => {
     before(() => {
       sinon.stub(productsModel, 'deleteProduct').resolves(false);
     });
-  
+
     after(() => {
       productsModel.deleteProduct.restore();
-    }); 
-
-    it('It must return false', async () => {
-      const result = await productsService.deleteProduct(9);
-  
-      expect(result).to.be.false;
     });
-  })
+
+    it('It should throw an error', async () => {
+      return expect(productsService.deleteProduct(INVALID_ID)).to.eventually
+        .rejectedWith('Product not found')
+        .and.be.an.instanceOf(Boom);
+    });
+  });
 
   describe('When product is deleted', () => {
     before(() => {
