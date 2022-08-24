@@ -24,5 +24,4 @@ productsRoute.put('/:id', [
 
 productsRoute.delete('/:id', rescue(productsController.deleteProduct));
 
-
 module.exports = productsRoute;
