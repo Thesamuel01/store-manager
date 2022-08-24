@@ -188,59 +188,39 @@ describe('TEST CASE PRODUCT MODEL - When a product is deleted', () => {
 });
 
 describe('TEST CASE PRODUCT MODEL - When a product search by a specific name', () => {
-  describe('When the products are not found', () => {
-    before(() => {
-      const executeResult = [{ affectedRows: 0 }, undefined];
-  
-      sinon.stub(connection, 'execute').resolves(executeResult);
-    });
-  
-    after(() => {
-      connection.execute.restore();
-    }); 
+  before(() => {
+    const executeResult = [[product], undefined];
 
-    it('It must return false', async () => {
-      const result = await productsModel.getByName('Picareta');
-  
-      expect(result).to.be.null;
-    });
-  })
+    sinon.stub(connection, 'execute').resolves(executeResult);
+  });
 
-  describe('When the products are found', () => {
-    before(() => {
-      const executeResult = [[product], undefined];
-  
-      sinon.stub(connection, 'execute').resolves(executeResult);
-    });
-  
-    after(() => {
-      connection.execute.restore();
-    });
-  
-    it('It should return an array', async () => {
-      const result = await productsModel.getByName();
+  after(() => {
+    connection.execute.restore();
+  });
 
-      expect(result).to.be.an('array');
-    });
+  it('It should return an array', async () => {
+    const result = await productsModel.getByName();
 
-    it('The array returned can not be empty', async () => {
-      const result = await productsModel.getByName();
+    expect(result).to.be.an('array');
+  });
 
-      expect(result).to.be.not.empty;
-    });
+  it('The array returned can not be empty', async () => {
+    const result = await productsModel.getByName();
 
-    it('It should return an array of objects', async () => {
-      const result = await productsModel.getByName();
-      const item = result[0];
+    expect(result).to.be.not.empty;
+  });
 
-      expect(item).to.be.an('object');
-    });
+  it('It should return an array of objects', async () => {
+    const result = await productsModel.getByName();
+    const item = result[0];
 
-    it('The objects from array must has "id" and "name" keys', async () => {
-      const result = await productsModel.getByName();
-      const item = result[0];
+    expect(item).to.be.an('object');
+  });
 
-      expect(item).to.all.keys('id', 'name');
-    })
+  it('The objects from array must has "id" and "name" keys', async () => {
+    const result = await productsModel.getByName();
+    const item = result[0];
+
+    expect(item).to.all.keys('id', 'name');
   })
 });
