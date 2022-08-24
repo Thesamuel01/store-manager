@@ -2,6 +2,7 @@ const sinon = require('sinon');
 
 const BASIC_REQ = {
   body: undefined,
+  query: {},
   params: {},
   headers: {},
 };

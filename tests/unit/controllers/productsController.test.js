@@ -178,3 +178,98 @@ describe('TEST CASE PRODUCT CONTROLLER - When a product is deleted', () => {
     expect(result.status).to.be.equal(204);
   });
 });
+
+describe('TEST CASE PRODUCT CONTROLLER - When a product search by a specific name', () => {
+  describe('When is not received any req query', () => {
+    before(() => {
+      sinon.stub(productsService, 'getAll').resolves(allProducts);
+    });
+
+    after(() => {
+      productsService.getAll.restore();
+    });
+
+    it('It should return code 200', async () => {
+      const result = await testController(productsController.getByName);
+
+      expect(result.status).to.be.equal(200);
+    });
+
+    it('It should return an array', async () => {
+      const result = await testController(productsController.getByName);
+
+      expect(result.spies.json.calledOnce).to.be.true;
+      expect(result.body).to.be.an('array');
+    });
+
+    it('The array returned can not be empty', async () => {
+      const result = await testController(productsController.getByName);
+
+      expect(result.body).to.be.not.empty;
+    });
+
+    it('It should return an array of objects', async () => {
+      const result = await testController(productsController.getByName);
+
+      expect(result.body[0]).to.be.an('object');
+    });
+
+    it('The objects from array must has "id" and "name" keys', async () => {
+      const result = await testController(productsController.getByName);
+
+      expect(result.body[0]).to.all.keys('id', 'name');
+    })
+  });
+
+  describe('When the products are not found', () => {
+    before(() => {
+      sinon.stub(productsService, 'getByName').resolves([]);
+    });
+
+    after(() => {
+      productsService.getByName.restore();
+    });
+
+    it('The array returned should be empty', async () => {
+      const result = await testController(productsController.getByName, { query: { q: 'Picareta' } });
+  
+      expect(result).to.be.empty;
+    });
+  });
+
+  describe('When the products are found', () => {
+    before(() => {
+      sinon.stub(productsService, 'getByName').resolves([product]);
+    });
+
+    after(() => {
+      productsService.getByName.restore();
+    });
+  
+    it('It should return an array', async () => {
+      const result = await productsService.getByName('');
+  
+      expect(result).to.be.an('array');
+    });
+
+    it('The array returned can not be empty', async () => {
+      const result = await productsService.getByName();
+
+      expect(result).to.be.not.empty;
+    });
+  
+    it('It should return an array of objects', async () => {
+      const result = await productsService.getByName();
+      const item = result[0];
+  
+      expect(item).to.be.an('object');
+    });
+  
+    it('The objects from array must has "id" and "name" keys', async () => {
+      const result = await productsService.getByName();
+      const item = result[0];
+  
+      expect(item).to.all.keys('id', 'name');
+    });
+  });
+});

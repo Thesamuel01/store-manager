@@ -213,7 +213,7 @@ describe('TEST CASE PRODUCT SERVICE - When a product is deleted', () => {
   })
 });
 
-describe('TEST CASE PRODUCT MODEL - When a product search by a specific name', () => {
+describe('TEST CASE PRODUCT SERVICE - When a product search by a specific name', () => {
   describe('When the products are not found', () => {
     before(() => {
       sinon.stub(productsModel, 'getByName').resolves([]);
