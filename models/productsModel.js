@@ -47,8 +47,8 @@ const deleteProduct = async (id) => {
 
 const getByName = async (name) => {
   const [result] = await connection.execute(
-    'SELECT * FROM StoreManager.products WHERE name LIKE %?%',
-    [name],
+    'SELECT * FROM StoreManager.products WHERE name LIKE ?',
+    [`%${name}%`],
   );
 
   return result;
