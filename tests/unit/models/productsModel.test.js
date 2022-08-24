@@ -199,26 +199,26 @@ describe('TEST CASE PRODUCT MODEL - When a product search by a specific name', (
   });
 
   it('It should return an array', async () => {
-    const result = await productsModel.getByName();
+    const result = await productsModel.getByName('Martelo');
 
     expect(result).to.be.an('array');
   });
 
   it('The array returned can not be empty', async () => {
-    const result = await productsModel.getByName();
+    const result = await productsModel.getByName('Martelo');
 
     expect(result).to.be.not.empty;
   });
 
   it('It should return an array of objects', async () => {
-    const result = await productsModel.getByName();
+    const result = await productsModel.getByName('Martelo');
     const item = result[0];
 
     expect(item).to.be.an('object');
   });
 
   it('The objects from array must has "id" and "name" keys', async () => {
-    const result = await productsModel.getByName();
+    const result = await productsModel.getByName('Martelo');
     const item = result[0];
 
     expect(item).to.all.keys('id', 'name');
