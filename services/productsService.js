@@ -38,10 +38,17 @@ const deleteProduct = async (id) => {
   return isDeleted;
 };
 
+const getByName = async (name) => {
+  const products = await productsModel.getByName(name);
+
+  return products;
+};
+
 module.exports = {
   getAll,
   getById,
   create,
   update,
   deleteProduct,
+  getByName,
 };
