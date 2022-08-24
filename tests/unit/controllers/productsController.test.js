@@ -233,7 +233,7 @@ describe('TEST CASE PRODUCT CONTROLLER - When a product search by a specific nam
     it('The array returned should be empty', async () => {
       const result = await testController(productsController.getByName, { query: { q: 'Picareta' } });
   
-      expect(result).to.be.empty;
+      expect(result.body).to.be.empty;
     });
   });
 
