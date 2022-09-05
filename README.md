@@ -2,7 +2,7 @@
 
 This is a project developed at Trybe's Back-End Module.
 
-Store Manager is an API developed using software architecture (Models, Services and Controllers) to receive HTTP requisitions to manage a simplified store database and then return the response to the client.
+Store Manager is an API developed using software architecture (Models, Services and Controllers) to receive HTTP requisitions to manage a simplified store database and then return a response to client.
 
 # Summary
 - [Store Manager](#store-manager)
@@ -62,18 +62,22 @@ npm run debug
 ```
 
 # Documentation
-### Get all products.
+
+## Products
+
+<details>
+ <summary>Get all products.</summary>
 
 ```http
-GET /produts
+GET /products
 ```
 
 - Response:
-  - Code: 
+  - code: 
   ```http
   200
   ```
-  - Body:
+  - body:
   ```json
   [
     {
@@ -87,4 +91,140 @@ GET /produts
     /* ... */
   ]
   ```
+  - code: 
+  ```http
+  404
+  ```
+  - body:
+  ```json
+  {
+   "statusCode": 404,
+   "error": "Not Found",
+   "message": "Product not found"
+  }
+  ```
+</details>
+ 
+<details>
+ <summary>Get product by ID.</summary>
+
+```http
+GET /products/:id
+```
+- Request:
+  - params:
+  ```
+  id -> Product ID
+  ```
+- Responses:
+  - code: 
+  ```http
+  200
+  ```
+  - body:
+  ```json
+   {
+    "id": 1,
+    "name": "Martelo de Thor",
+   }
+  ```
+   - code: 
+  ```http
+  404
+  ```
+  - body:
+  ```json
+  {
+   "statusCode": 404,
+   "error": "Not Found",
+   "message": "Product not found"
+  }
+  ```
+</details>
+
+<details>
+ <summary>Create a product.</summary>
+
+```http
+POST /products
+```
+- Request:
+  - schema:
+  ```json
+  {
+    "name": "string",
+    required: true,
+    minLength: 5
+  }
+  ```
+  - body:
+  ```json
+  {
+    "name": "ProdutoX"
+  }
+  ```
+- Responses:
+  - code: 
+  ```http
+  201
+  ```
+  - body:
+  ```json
+  {
+    "id": 1,
+    "name": "Martelo do Batman"
+  }
+  ```
+</details>
+
+<details>
+ <summary>Update a product.</summary>
+
+```http
+PUT /products/:id
+```
+- Request:
+  - params:
+  ```
+  id -> Product ID
+  ```
+  - schema:
+  ```json
+  {
+    "name": "string",
+    required: true,
+    minLength: 5
+  }
+  ```
+  - body:
+  ```json
+  {
+    "name": "Martelo do Batman"
+  }
+  ```
+- Responses:
+  - code: 
+  ```http
+  200
+  ```
+  - body:
+  ```json
+  {
+    "id": 1,
+    "name": "Martelo do Batman"
+  }
+  ```
+  - code: 
+  ```http
+  404
+  ```
+  - body:
+  ```json
+  {
+   "statusCode": 404,
+   "error": "Not Found",
+   "message": "Product not found"
+  }
+  ```
+</details>
 ...In progress
