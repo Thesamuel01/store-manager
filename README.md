@@ -80,7 +80,7 @@ cd store-manager
 docker-compose up -d
 ```
 
-### Entering the bash terminal from the Node container.
+### Entering into bash terminal from Node container.
 ```
 docker exec -it store_manager bash
 ```
